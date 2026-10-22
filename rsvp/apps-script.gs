@@ -11,7 +11,7 @@
  * Then Deploy → New deployment → type "Web app", Execute as "Me", Who has access "Anyone"
  * → copy the /exec URL into RSVP_ENDPOINT in index.html.
  */
-const SPREADSHEET_ID = '1DQ_h6YbGHFd3s9fw4f37vYA5yYN0gQiBx-cMw5knl6I'; // only needed for setup B (standalone script)
+const SPREADSHEET_ID = ''; // only needed for setup B (standalone script)
 const NOTIFY_EMAIL = 'vivekindia136@gmail.com';
 const SHEET_NAME = 'RSVPs';
 const HEADERS = ['Submitted at', 'Name', 'Guests'];
