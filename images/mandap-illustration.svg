@@ -1,0 +1,159 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+  <!-- Illustrated open-air floral mandap at golden hour. Used as the invite backdrop
+       when images/mandap.jpg is not present. -->
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3A1C4E"/>
+      <stop offset=".38" stop-color="#9C4F86"/>
+      <stop offset=".62" stop-color="#E9919A"/>
+      <stop offset=".8" stop-color="#FFC99A"/>
+      <stop offset="1" stop-color="#FFE7B8"/>
+    </linearGradient>
+    <radialGradient id="sun" cx=".5" cy=".5" r=".5">
+      <stop offset="0" stop-color="#FFF6D2" stop-opacity=".95"/>
+      <stop offset=".4" stop-color="#FFE3A0" stop-opacity=".45"/>
+      <stop offset="1" stop-color="#FFE3A0" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="lawn" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6F8F5C"/>
+      <stop offset="1" stop-color="#3F5E3C"/>
+    </linearGradient>
+    <linearGradient id="aisle" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFF1E4"/>
+      <stop offset="1" stop-color="#F6D3DC"/>
+    </linearGradient>
+    <linearGradient id="pillar" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#CFA972"/>
+      <stop offset=".45" stop-color="#FFF4DC"/>
+      <stop offset="1" stop-color="#C79A5E"/>
+    </linearGradient>
+    <linearGradient id="canopy" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFE9B0"/>
+      <stop offset="1" stop-color="#F3A9C0"/>
+    </linearGradient>
+    <linearGradient id="drape" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity=".95"/>
+      <stop offset=".5" stop-color="#FFE4EC" stop-opacity=".9"/>
+      <stop offset="1" stop-color="#F8C6D6" stop-opacity=".95"/>
+    </linearGradient>
+    <radialGradient id="glow" cx=".5" cy=".5" r=".5">
+      <stop offset="0" stop-color="#FFF2B8" stop-opacity=".9"/>
+      <stop offset="1" stop-color="#FFF2B8" stop-opacity="0"/>
+    </radialGradient>
+    <g id="flowers">
+      <ellipse cx="-22" cy="10" rx="20" ry="9" fill="#4F7A45" transform="rotate(-25 -22 10)"/>
+      <ellipse cx="24" cy="12" rx="20" ry="9" fill="#5E8A50" transform="rotate(25 24 12)"/>
+      <circle cx="0" cy="0" r="18" fill="#E0457B"/>
+      <circle cx="0" cy="0" r="10" fill="#B8174E"/>
+      <circle cx="-26" cy="-4" r="14" fill="#FFB6CE"/>
+      <circle cx="26" cy="-2" r="14" fill="#FFFFFF"/>
+      <circle cx="-12" cy="18" r="12" fill="#FFD24D"/>
+      <circle cx="14" cy="18" r="12" fill="#FF9F43"/>
+      <circle cx="0" cy="-22" r="11" fill="#F7E6FF"/>
+    </g>
+  </defs>
+
+  <!-- Sky, sun glow, horizon -->
+  <rect width="1600" height="1000" fill="url(#sky)"/>
+  <circle cx="800" cy="600" r="460" fill="url(#sun)"/>
+  <path d="M0 640 Q180 560 400 610 T820 590 T1240 605 T1600 580 V1000 H0Z" fill="#7A5B83" opacity=".5"/>
+  <g fill="#3F4B45" opacity=".85">
+    <ellipse cx="90" cy="640" rx="110" ry="80"/>
+    <ellipse cx="230" cy="660" rx="90" ry="60"/>
+    <ellipse cx="1380" cy="650" rx="100" ry="70"/>
+    <ellipse cx="1520" cy="635" rx="120" ry="85"/>
+  </g>
+
+  <!-- Lawn and petal-lined aisle -->
+  <path d="M0 690 Q800 650 1600 690 V1000 H0Z" fill="url(#lawn)"/>
+  <path d="M735 695 L865 695 L1120 1000 L480 1000Z" fill="url(#aisle)"/>
+  <g fill="none" stroke-linecap="round">
+    <path d="M735 695 L480 1000" stroke="#E0457B" stroke-width="14" stroke-dasharray="0 26"/>
+    <path d="M865 695 L1120 1000" stroke="#E0457B" stroke-width="14" stroke-dasharray="0 26"/>
+    <path d="M722 695 L455 1000" stroke="#FFD24D" stroke-width="10" stroke-dasharray="0 30"/>
+    <path d="M878 695 L1145 1000" stroke="#FFD24D" stroke-width="10" stroke-dasharray="0 30"/>
+  </g>
+
+  <!-- Fairy lights strung across the top -->
+  <g fill="none" stroke-linecap="round">
+    <path d="M-20 70 Q400 230 820 90 T1620 110" stroke="#FFF2B8" stroke-width="7" stroke-dasharray="0 34"/>
+    <path d="M-20 160 Q380 300 800 190 T1620 200" stroke="#FFE3A0" stroke-width="6" stroke-dasharray="0 30" opacity=".85"/>
+  </g>
+
+  <!-- Back pillars -->
+  <rect x="598" y="390" width="22" height="310" rx="6" fill="url(#pillar)" opacity=".85"/>
+  <rect x="980" y="390" width="22" height="310" rx="6" fill="url(#pillar)" opacity=".85"/>
+
+  <!-- Low platform with rug -->
+  <path d="M600 690 H1000 L1030 730 H570Z" fill="#F3DFC2"/>
+  <path d="M640 696 H960 L980 724 H620Z" fill="#C72A5E" opacity=".85"/>
+  <circle cx="800" cy="700" r="70" fill="url(#glow)"/>
+
+  <!-- Canopy dome and scalloped valance -->
+  <path d="M430 305 Q800 110 1170 305 Z" fill="url(#canopy)"/>
+  <path d="M470 290 Q800 140 1130 290" fill="none" stroke="#FFFFFF" stroke-width="4" opacity=".6"/>
+  <path d="M800 210 L800 182" stroke="#E0B060" stroke-width="6"/>
+  <circle cx="800" cy="174" r="12" fill="#FFD24D"/>
+  <g fill="none" stroke-linecap="round">
+    <path d="M440 310 H1160" stroke="#FFB6CE" stroke-width="30" stroke-dasharray="0 36"/>
+    <path d="M440 334 H1160" stroke="#FF9F43" stroke-width="18" stroke-dasharray="0 24"/>
+  </g>
+
+  <!-- Hanging marigold & rose strings (laris) -->
+  <g fill="none" stroke-linecap="round" stroke-width="15" stroke-dasharray="0 17">
+    <path d="M520 345 V470" stroke="#FF9F43"/>
+    <path d="M565 345 V430" stroke="#FFD24D"/>
+    <path d="M610 345 V500" stroke="#FF9F43"/>
+    <path d="M655 345 V445" stroke="#FFD24D"/>
+    <path d="M700 345 V480" stroke="#FF9F43"/>
+    <path d="M745 345 V420" stroke="#FFD24D"/>
+    <path d="M855 345 V420" stroke="#FFD24D"/>
+    <path d="M900 345 V480" stroke="#FF9F43"/>
+    <path d="M945 345 V445" stroke="#FFD24D"/>
+    <path d="M990 345 V500" stroke="#FF9F43"/>
+    <path d="M1035 345 V430" stroke="#FFD24D"/>
+    <path d="M1080 345 V470" stroke="#FF9F43"/>
+  </g>
+  <g fill="#E0457B">
+    <circle cx="520" cy="484" r="11"/><circle cx="610" cy="514" r="11"/><circle cx="700" cy="494" r="11"/>
+    <circle cx="900" cy="494" r="11"/><circle cx="990" cy="514" r="11"/><circle cx="1080" cy="484" r="11"/>
+  </g>
+
+  <!-- Swagged drapes between the front pillars -->
+  <path d="M470 330 Q560 470 660 360 Q740 300 800 340 Q860 300 940 360 Q1040 470 1130 330 L1130 350 Q1040 500 940 385 Q860 330 800 365 Q740 330 660 385 Q560 500 470 350Z" fill="url(#drape)"/>
+
+  <!-- Front pillars with tied-back side drapes -->
+  <rect x="450" y="300" width="42" height="520" rx="10" fill="url(#pillar)"/>
+  <rect x="1108" y="300" width="42" height="520" rx="10" fill="url(#pillar)"/>
+  <path d="M430 300 Q520 520 470 600 Q440 700 410 820 L390 820 Q420 650 455 590 Q470 520 405 300Z" fill="url(#drape)"/>
+  <path d="M1170 300 Q1080 520 1130 600 Q1160 700 1190 820 L1210 820 Q1180 650 1145 590 Q1130 520 1195 300Z" fill="url(#drape)"/>
+  <g fill="none" stroke-linecap="round" stroke-width="13" stroke-dasharray="0 16">
+    <path d="M456 400 V800" stroke="#FFD24D"/>
+    <path d="M486 400 V800" stroke="#FF9F43"/>
+    <path d="M1114 400 V800" stroke="#FF9F43"/>
+    <path d="M1144 400 V800" stroke="#FFD24D"/>
+  </g>
+
+  <!-- Floral clusters on the canopy corners, drape ties and pillar bases -->
+  <use href="#flowers" x="460" y="300"/>
+  <use href="#flowers" x="1140" y="300"/>
+  <use href="#flowers" x="800" y="335"/>
+  <use href="#flowers" x="455" y="595"/>
+  <use href="#flowers" x="1145" y="595"/>
+  <use href="#flowers" x="470" y="815"/>
+  <use href="#flowers" x="1130" y="815"/>
+  <use href="#flowers" x="410" y="830"/>
+  <use href="#flowers" x="1190" y="830"/>
+
+  <!-- A few drifting petals -->
+  <g fill="#FFB6CE" opacity=".85">
+    <ellipse cx="300" cy="420" rx="9" ry="5" transform="rotate(30 300 420)"/>
+    <ellipse cx="1290" cy="380" rx="9" ry="5" transform="rotate(-20 1290 380)"/>
+    <ellipse cx="1230" cy="560" rx="8" ry="4" transform="rotate(50 1230 560)"/>
+    <ellipse cx="360" cy="600" rx="8" ry="4" transform="rotate(-40 360 600)"/>
+  </g>
+  <g fill="#E0457B" opacity=".8">
+    <ellipse cx="250" cy="300" rx="7" ry="4" transform="rotate(10 250 300)"/>
+    <ellipse cx="1350" cy="470" rx="7" ry="4" transform="rotate(70 1350 470)"/>
+  </g>
+</svg>

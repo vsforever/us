@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 120 120" width="120" height="120">
+  <!-- Upright Madhubani-style lotus bouquet for the invitation card corners (theme pinks, crimson, buttercup). -->
+  <defs>
+    <path id="p" d="M60 96C49 80 51 54 60 34C69 54 71 80 60 96Z"/>
+  </defs>
+  <!-- Stems and buds -->
+  <g fill="none" stroke="#2F6B3A" stroke-width="2.4" stroke-linecap="round">
+    <path d="M58 100C44 88 32 70 26 50"/>
+    <path d="M62 100C76 88 88 70 94 50"/>
+  </g>
+  <g stroke="#B3261E" stroke-width="1.4">
+    <path d="M26 52C18 44 18 32 24 22C32 30 34 42 26 52Z" fill="#E0457B"/>
+    <path d="M94 52C102 44 102 32 96 22C88 30 86 42 94 52Z" fill="#E0457B"/>
+  </g>
+  <g fill="none" stroke="#FFD1DF" stroke-width="1" stroke-linecap="round">
+    <path d="M24 30C23 37 24 43 26 48"/><path d="M96 30C97 37 96 43 94 48"/>
+  </g>
+  <!-- Leaves -->
+  <g stroke="#1F4A2A" stroke-width="1.3">
+    <path d="M60 104C42 106 20 100 8 84C30 80 48 88 60 104Z" fill="#3E8A4A"/>
+    <path d="M60 104C78 106 100 100 112 84C90 80 72 88 60 104Z" fill="#3E8A4A"/>
+  </g>
+  <g fill="none" stroke="#9FD1A4" stroke-width=".9" stroke-linecap="round">
+    <path d="M56 102C42 98 28 92 16 86"/><path d="M64 102C78 98 92 92 104 86"/>
+  </g>
+  <!-- Lotus petals: outer, middle, centre -->
+  <g stroke="#B3261E" stroke-width="1.5" stroke-linejoin="round">
+    <use xlink:href="#p" href="#p" fill="#E0457B" transform="rotate(-58 60 96) scale(1 1)"/>
+    <use xlink:href="#p" href="#p" fill="#E0457B" transform="rotate(58 60 96)"/>
+    <use xlink:href="#p" href="#p" fill="#F4A6C0" transform="rotate(-30 60 96)"/>
+    <use xlink:href="#p" href="#p" fill="#F4A6C0" transform="rotate(30 60 96)"/>
+    <use xlink:href="#p" href="#p" fill="#FCE4EC"/>
+  </g>
+  <!-- Kachni line work inside petals -->
+  <g fill="none" stroke="#B3261E" stroke-width=".8" stroke-linecap="round">
+    <path d="M60 90V46"/><path d="M56 86C54 72 55 60 58 50"/><path d="M64 86C66 72 65 60 62 50"/>
+  </g>
+  <!-- Seed pod and pollen -->
+  <path d="M46 96Q60 84 74 96Z" fill="#E8A317" stroke="#B3261E" stroke-width="1.3"/>
+  <g fill="#E8A317">
+    <circle cx="60" cy="24" r="2.4"/><circle cx="48" cy="30" r="1.6"/><circle cx="72" cy="30" r="1.6"/>
+  </g>
+</svg>

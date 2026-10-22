@@ -9,7 +9,7 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💗</text></svg>" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Parisienne&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=Playfair+Display:ital,wght@0,500;0,700;1,500;1,600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js" defer></script>
 
 <style>
@@ -34,6 +34,9 @@
     --font-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
     --font-script: 'Great Vibes', 'Brush Script MT', cursive;
     --font-elegant: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+    /* Paper grain for the kraft envelope (tileable SVG noise). */
+    --kraft-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .22 0 0 0 0 .13 0 0 0 0 .06 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    --kraft-fibres: repeating-linear-gradient(115deg, rgba(255, 235, 200, .05) 0 2px, transparent 2px 7px), repeating-linear-gradient(25deg, rgba(60, 30, 10, .05) 0 1px, transparent 1px 9px);
     --shadow-warm: 0 18px 40px -18px rgba(199, 42, 94, .45), 0 6px 18px -8px rgba(185, 163, 242, .5);
   }
 
@@ -166,7 +169,6 @@
     padding: 24px; text-align: center;
     background: radial-gradient(ellipse at 50% 45%, #4A1840 0%, #2A0E2C 55%, #170818 100%);
     overflow: hidden;
-    cursor: pointer;
     opacity: 0; visibility: hidden;
     transition: opacity 1s ease, visibility 1s ease;
   }
@@ -185,14 +187,6 @@
   .cutu-text { font-size: clamp(3.6rem, 15vw, 8rem); margin: 0; }
   .cutu-sub { margin: 14px auto 0; max-width: 460px; font-family: var(--font-serif); font-style: italic; font-size: clamp(1rem, 2.8vw, 1.25rem); color: var(--lav-1); opacity: .9; }
   #cutu .enter-prompt { z-index: 1; }
-  .cutu-banner {
-    font-family: var(--font-script);
-    font-size: clamp(2.6rem, 9vw, 4.4rem);
-    line-height: 1.1;
-    margin: 0 0 .15em;
-    color: var(--rose-pink);
-    text-shadow: 0 0 18px rgba(255, 227, 138, .7), 0 0 40px rgba(255, 143, 184, .35);
-  }
   @keyframes popIn { from { transform: scale(.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
   /* ---------- Falling petals ----------
@@ -769,42 +763,19 @@
     box-shadow: var(--shadow-warm);
   }
 
-  .love-line { position: relative; display: flex; justify-content: space-between; gap: 10px; padding: 8px 4px 16px; overflow-x: auto; scrollbar-width: none; }
-  .love-line::-webkit-scrollbar { display: none; }
-  .love-line::before {
-    content: ''; position: absolute; left: 40px; right: 40px; top: 31px; height: 3px;
-    background: linear-gradient(90deg, var(--lav-3), var(--orange), var(--gold));
-    border-radius: 3px; opacity: .6;
-  }
-  .ms-btn { position: relative; flex: 1 0 96px; display: flex; flex-direction: column; align-items: center; gap: 8px; background: none; border: 0; color: var(--ink-soft); font-size: .82rem; font-weight: 500; text-align: center; }
-  .ms-dot {
-    width: 48px; height: 48px; border-radius: 50%;
-    display: grid; place-items: center; font-size: 1.3rem;
-    background: var(--cream); border: 3px solid var(--lav-3);
-    transition: transform .35s ease, border-color .35s ease, box-shadow .35s ease;
-  }
-  .ms-btn:hover .ms-dot { transform: translateY(-4px); }
-  .ms-btn[aria-pressed="true"] { color: var(--ink); }
-  .ms-btn[aria-pressed="true"] .ms-dot { border-color: var(--orange); transform: scale(1.15); box-shadow: 0 0 0 6px rgba(255, 227, 138, .4); }
-  .ms-btn:focus-visible { outline: none; }
-  .ms-btn:focus-visible .ms-dot { box-shadow: 0 0 0 4px var(--lav-3); }
-  .ms-detail { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); overflow: hidden; margin-top: 14px; }
-  .ms-detail .photo { min-height: 260px; }
-  .ms-detail-body { padding: clamp(20px, 4vw, 34px); align-self: center; animation: panelIn .5s ease both; }
-  .ms-detail-body h3 { font-family: var(--font-serif); font-size: 1.6rem; margin: .2em 0 .4em; }
-  .ms-detail-body p { margin: 0; color: var(--ink-soft); }
-
   .countdown-card { padding: clamp(24px, 4vw, 40px); text-align: center; background: linear-gradient(135deg, rgba(255, 255, 255, .75), rgba(241, 232, 255, .75)); }
+  .home-countdown { margin-top: clamp(48px, 7vw, 72px); }
+  .cd-date { color: var(--ink-soft); font-size: .95rem; margin: 0 0 18px; }
+  .memory-lane { margin-top: clamp(56px, 8vw, 88px); padding-top: clamp(40px, 6vw, 60px); border-top: 1.5px dashed rgba(185, 163, 242, .55); }
   .countdown { display: flex; justify-content: center; gap: clamp(8px, 2vw, 18px); margin: 18px 0 10px; }
   .cd-unit { min-width: clamp(64px, 16vw, 92px); padding: 14px 6px 10px; border-radius: 18px; background: #fff; border: 1.5px solid rgba(255, 227, 138, .8); box-shadow: 0 10px 22px -12px rgba(199, 42, 94, .6); }
   .cd-unit b { display: block; font-family: var(--font-serif); font-size: clamp(1.6rem, 5vw, 2.4rem); color: var(--terra); line-height: 1.1; font-variant-numeric: tabular-nums; }
   .cd-unit span { font-size: .68rem; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-soft); }
-  .cd-date { color: var(--ink-soft); font-size: .95rem; margin: 0 0 18px; }
   .countdown.small { gap: 8px; }
   .countdown.small .cd-unit { min-width: 58px; padding: 10px 4px 8px; }
   .countdown.small .cd-unit b { font-size: 1.5rem; }
 
-  .showcase { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; }
+  .showcase { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
   .tile {
     padding: 0; aspect-ratio: 1; border-radius: 18px; overflow: hidden;
     border: 4px solid #fff; background: none;
@@ -878,35 +849,52 @@
     position: fixed; inset: 0; z-index: 820;
     overflow-y: auto;
     padding: 30px 16px;
-    background: rgba(40, 24, 40, .6);
-    backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+    background: #2A0E2C;
     opacity: 0; visibility: hidden;
     transition: opacity .5s ease, visibility .5s ease;
   }
   #invite.show { opacity: 1; visibility: visible; }
+  /* Scenic floral-mandap backdrop behind the invite and the envelope.
+     Photo: images/mandap3.png; the SVG illustration shows if the photo is missing. */
+  #invite::before, #envelope::before {
+    content: ''; position: fixed; inset: -24px; z-index: -1; pointer-events: none;
+    background:
+      linear-gradient(180deg, rgba(42, 14, 44, var(--scrim-top)), rgba(42, 14, 44, var(--scrim-bottom))),
+      url('images/mandap3.png') center / cover no-repeat,
+      url('images/mandap-illustration.svg') center / cover no-repeat;
+    filter: blur(var(--scenic-blur)) saturate(1.05);
+  }
+  #invite { --scrim-top: .35; --scrim-bottom: .55; --scenic-blur: 3px; }
+  #envelope { --scrim-top: .2; --scrim-bottom: .42; --scenic-blur: .5px; }
+  .env-to, .env-hint, .env-close { text-shadow: 0 1px 2px rgba(40, 10, 10, .9), 0 2px 14px rgba(40, 10, 10, .85); }
   .invite-card {
     position: relative;
     width: min(640px, 100%);
     margin: 30px auto;
-    padding: clamp(50px, 8vw, 72px) clamp(20px, 6vw, 56px);
+    --frame: clamp(24px, 5.5vw, 38px);
+    --bouquet: clamp(64px, 15vw, 100px);
+    padding: clamp(40px, 7vw, 60px) clamp(18px, 5vw, 48px);
     text-align: center;
     background:
       radial-gradient(circle at 50% 0%, rgba(241, 232, 255, .9), transparent 55%),
       radial-gradient(circle at 50% 100%, rgba(255, 211, 224, .7), transparent 55%),
       var(--cream);
-    border: 6px double #D9A3AE;
-    border-radius: 22px;
+    /* Royal Madhubani frame: 9-slice SVG (lotus corners, sawtooth + vine + kachni hatching edges). */
+    border: var(--frame) solid #B3261E;
+    border-image: url('images/madhubani-border.svg') 40 round;
+    border-radius: 4px;
     box-shadow: 0 40px 90px -30px rgba(0, 0, 0, .6);
     transform: translateY(30px) scale(.96);
     transition: transform .7s cubic-bezier(.2, 1.3, .4, 1);
   }
   #invite.show .invite-card { transform: none; }
-  .invite-card::before { content: ''; position: absolute; inset: 12px; border: 1px solid rgba(217, 163, 174, .6); border-radius: 14px; pointer-events: none; }
-  .flora { position: absolute; font-size: clamp(1.5rem, 5vw, 2.3rem); line-height: 1; pointer-events: none; filter: drop-shadow(0 3px 4px rgba(199, 42, 94, .3)); }
-  .flora.tl { top: -20px; left: -14px; transform: rotate(-18deg); }
-  .flora.tr { top: -20px; right: -14px; transform: rotate(18deg); }
-  .flora.bl { bottom: -20px; left: -14px; transform: rotate(-162deg); }
-  .flora.br { bottom: -20px; right: -14px; transform: rotate(162deg); }
+  .invite-card::before { content: ''; position: absolute; inset: 8px; border: 1px solid rgba(179, 38, 30, .55); outline: 1px solid rgba(232, 163, 23, .55); outline-offset: 3px; pointer-events: none; }
+  /* Upright lotus bouquets sitting on each corner of the frame. */
+  .flora { position: absolute; z-index: 1; width: var(--bouquet); aspect-ratio: 1; background: url('images/lotus-bouquet.svg') center / contain no-repeat; pointer-events: none; filter: drop-shadow(0 4px 5px rgba(90, 20, 20, .35)); }
+  .flora.tl, .flora.tr { top: calc(-1 * var(--frame) - var(--bouquet) * .55); }
+  .flora.bl, .flora.br { bottom: calc(-1 * var(--frame) - var(--bouquet) * .2); }
+  .flora.tl, .flora.bl { left: calc(-1 * var(--frame) - 12px); }
+  .flora.tr, .flora.br { right: calc(-1 * var(--frame) - 12px); }
   .invite-close {
     position: absolute; top: 22px; right: 22px; z-index: 2;
     width: 38px; height: 38px; border-radius: 50%;
@@ -917,13 +905,12 @@
   .inv-names span { display: block; font-size: .45em; color: #C27A8A; }
   .inv-text { font-family: var(--font-serif); font-style: italic; color: var(--ink-soft); max-width: 420px; margin: 0 auto; }
   .gold-rule { position: relative; width: 160px; height: 1px; margin: 26px auto; background: linear-gradient(90deg, transparent, #D9A3AE, transparent); }
-  .gold-rule::after { content: '\2766'; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); padding: 0 8px; background: var(--cream); color: #C27A8A; }
+  .gold-rule::after { content: '\2766'; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); padding: 0 8px; background: var(--cream); color: #B3261E; }
   .save-date { margin: 0 0 26px; padding: 22px 16px; border-radius: 18px; background: rgba(255, 255, 255, .72); border: 1.5px solid rgba(217, 163, 174, .55); }
   .save-date h3 { font-family: var(--font-serif); margin: 0 0 12px; font-size: 1.35rem; letter-spacing: .06em; }
   .sd-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
   .sd-grid small { display: block; font-size: .66rem; letter-spacing: .2em; text-transform: uppercase; color: #A9566A; font-weight: 600; }
   .sd-grid strong { font-family: var(--font-serif); font-weight: 500; font-size: 1.02rem; }
-  .inv-address { margin: 10px 0 4px; font-size: .88rem; color: var(--ink-soft); }
   .btn-rsvp { animation: glow 2.4s ease-in-out infinite; padding: 15px 38px; font-size: 1.05rem; }
   .events { text-align: left; margin-top: 30px; }
   .events h3 { text-align: center; font-family: var(--font-serif); font-size: 1.35rem; margin: 0 0 14px; }
@@ -941,6 +928,178 @@
   .event-body p { margin: 0; padding: 0 16px 6px 54px; color: var(--ink-soft); font-size: .92rem; }
   .event-body p:last-child { padding-bottom: 16px; }
 
+  .events .ev-day {
+    margin: 18px 0 8px; text-align: center;
+    font-size: .72rem; letter-spacing: .24em; text-transform: uppercase; font-weight: 600; color: #A9566A;
+  }
+  .events .ev-day:first-of-type { margin-top: 0; }
+  .swatch { display: inline-block; width: .8em; height: .8em; border-radius: 50%; margin-right: .35em; vertical-align: -1px; box-shadow: 0 0 0 2px #fff, 0 0 0 3px rgba(0, 0, 0, .08); }
+  .inv-tagline { margin: 14px 0 4px; font-family: var(--font-script); font-size: clamp(1.5rem, 5vw, 1.9rem); color: var(--terra); line-height: 1.2; }
+
+  /* ---------- Post-YES invitation call-to-action ---------- */
+  /* Centred with auto margins (not translateX) so entrance animations can't knock it off-centre. */
+  .cutu-cta {
+    position: absolute; left: 0; right: 0; bottom: max(6vh, 30px); z-index: 1;
+    width: min(92vw, 460px); margin: 0 auto;
+    display: grid; justify-items: center; align-items: end;
+  }
+  /* Teasers and the final invite button share one grid cell and take turns. */
+  .cutu-tease, .cutu-final { grid-area: 1 / 1; }
+  .cutu-tease {
+    margin: 0; font-family: 'Playfair Display', var(--font-serif); font-style: italic; font-weight: 500;
+    font-size: clamp(1.25rem, 4.2vw, 1.7rem); color: #FFE7A6;
+    text-shadow: 0 0 18px rgba(255, 214, 130, .45);
+    opacity: 0; transform: translateY(12px);
+    transition: opacity .9s ease, transform .9s ease;
+  }
+  #cutu[data-stage="tease-1"] .cutu-tease[data-tease="1"],
+  #cutu[data-stage="tease-2"] .cutu-tease[data-tease="2"] { opacity: 1; transform: none; }
+  .cutu-final { display: flex; flex-direction: column; align-items: center; gap: 10px; opacity: 0; visibility: hidden; }
+  #cutu[data-stage="cta"] .cutu-final { animation: ctaDrop 1.2s cubic-bezier(.2, 1.35, .4, 1) both; }
+  @keyframes ctaDrop {
+    from { opacity: 0; visibility: visible; transform: translateY(-70px) scale(.92); }
+    to { opacity: 1; visibility: visible; transform: none; }
+  }
+  .cta-line { margin: 0; font-family: var(--font-elegant); font-style: italic; font-size: clamp(1.05rem, 3.4vw, 1.3rem); color: var(--lav-1); }
+  .invite-cta {
+    border: 0; border-radius: 999px;
+    padding: 15px 30px;
+    font-weight: 600; font-size: clamp(.95rem, 3vw, 1.05rem); letter-spacing: .03em;
+    color: #5A1E3C;
+    background: linear-gradient(135deg, var(--rose-pink), var(--gold) 70%);
+    animation: glow 2.2s ease-in-out infinite;
+    transition: transform .3s ease;
+  }
+  .invite-cta:hover { transform: translateY(-2px) scale(1.03); }
+  .invite-cta:focus-visible { outline: 3px solid var(--cream); outline-offset: 4px; }
+
+  /* ---------- Sealed envelope that opens into the invitation ---------- */
+  #envelope {
+    position: fixed; inset: 0; z-index: 830;
+    display: grid; place-items: center; padding: 24px;
+    background: #2A0E2C;
+    opacity: 0; visibility: hidden;
+    transition: opacity .7s ease, visibility .7s ease;
+  }
+  #envelope.show { opacity: 1; visibility: visible; }
+  .env-stage { display: flex; flex-direction: column; align-items: center; gap: clamp(18px, 4vh, 30px); text-align: center; }
+  /* Heading over the bright mandap photo: ivory caps + gold italic serif, with the shared dark text-shadow. */
+  .env-to {
+    margin: 0;
+    font-family: 'Poppins', sans-serif; font-weight: 500; font-size: clamp(.7rem, 2.3vw, .85rem);
+    letter-spacing: .28em; text-transform: uppercase; color: #FFF6E6;
+  }
+  .env-to b {
+    display: block; margin-top: 6px;
+    font-family: 'Playfair Display', var(--font-serif); font-style: italic; font-weight: 600;
+    font-size: clamp(1.9rem, 6.4vw, 2.9rem); letter-spacing: .01em; text-transform: none; line-height: 1.1;
+    color: #FFDE8A;
+  }
+  .env {
+    position: relative;
+    /* Large, but never taller than the screen leaves room for (text above + hint below). */
+    width: min(94vw, 620px, calc((100svh - 230px) * 1.5)); aspect-ratio: 1.5;
+    perspective: 1400px;
+    cursor: pointer;
+    --env-art: url('images/envelope-ganesh.svg');
+    filter: drop-shadow(0 30px 40px rgba(10, 0, 10, .55));
+    animation: envFloat 4.5s ease-in-out infinite, envGlow 3s ease-in-out infinite;
+  }
+  .env-back, .env-pocket, .env-flap { position: absolute; border-radius: 10px; }
+  /* Reddish-brown kraft-paper envelope: grain + fibres over warm red-brown tones, with a fine gold edge. */
+  .env-back { inset: 0; background: var(--kraft-grain), var(--kraft-fibres), linear-gradient(160deg, #8E3B2C, #6E2A20); box-shadow: inset 0 0 0 2px rgba(232, 190, 110, .55); }
+  .env-letter {
+    position: absolute; left: 6%; right: 6%; top: 7%; height: 86%; z-index: 1;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+    padding: 12px;
+    border-radius: 8px;
+    background: radial-gradient(circle at 50% 0%, rgba(241, 232, 255, .9), transparent 60%), #FFFDF8;
+    box-shadow: inset 0 0 0 3px #fff, inset 0 0 0 4px rgba(217, 163, 174, .8);
+    color: var(--ink);
+  }
+  .el-eyebrow { font-size: clamp(.55rem, 1.8vw, .7rem); letter-spacing: .26em; text-transform: uppercase; color: #A9566A; font-weight: 600; }
+  .el-names { font-family: var(--font-script); font-size: clamp(1.8rem, 7vw, 2.8rem); line-height: 1.1; }
+  .el-meta { font-family: var(--font-elegant); font-style: italic; font-size: clamp(.85rem, 2.8vw, 1.05rem); color: var(--ink-soft); }
+  .env-pocket {
+    inset: 0; z-index: 2;
+    background: var(--env-art) 0 0 / 100% 100% no-repeat, var(--kraft-grain), var(--kraft-fibres), linear-gradient(180deg, #9C4433, #7C3125);
+    clip-path: polygon(0 0, 50% 56%, 100% 0, 100% 100%, 0 100%);
+  }
+  .env-pocket::after {
+    content: ''; position: absolute; inset: 0; border-radius: inherit;
+    background: var(--env-art) 0 0 / 100% 100% no-repeat, var(--kraft-grain), var(--kraft-fibres), linear-gradient(0deg, #6A271D, #8A3A2B);
+    clip-path: polygon(0 100%, 50% 48%, 100% 100%);
+  }
+  .env-flap {
+    left: 0; right: 0; top: 0; height: 58%; z-index: 3;
+    transform-origin: top center;
+    /* Flap is 58% of the envelope height, so stretch the shared artwork to the full envelope. */
+    background: var(--env-art) 0 0 / 100% calc(100% / .58) no-repeat, var(--kraft-grain), var(--kraft-fibres), linear-gradient(180deg, #A84D3A, #82352A);
+    box-shadow: inset 0 -6px 10px rgba(60, 30, 10, .25);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    transition: transform .8s cubic-bezier(.4, 0, .2, 1) .25s, z-index 0s .65s;
+  }
+  /* Gold sheen sweeping across the closed envelope, plus twinkling glints around it. */
+  .env-shine {
+    position: absolute; inset: 0; z-index: 3; border-radius: 10px; pointer-events: none;
+    background: linear-gradient(115deg, transparent 38%, rgba(255, 228, 160, .08) 44%, rgba(255, 240, 200, .55) 50%, rgba(255, 228, 160, .08) 56%, transparent 62%) 0 0 / 260% 100% no-repeat;
+    mix-blend-mode: screen;
+    animation: envShine 3.2s ease-in-out infinite;
+    transition: opacity .3s ease;
+  }
+  .env-glint { position: absolute; z-index: 5; color: #FFE7A6; font-size: clamp(.8rem, 2.4vw, 1.2rem); line-height: 1; pointer-events: none; text-shadow: 0 0 8px rgba(255, 220, 140, .9); opacity: 0; animation: glint 2.6s ease-in-out infinite; transition: opacity .3s ease; }
+  .env-glint:nth-of-type(1) { top: -6%; left: 8%; animation-delay: 0s; }
+  .env-glint:nth-of-type(2) { top: 18%; right: -4%; animation-delay: .7s; font-size: clamp(.6rem, 1.8vw, .9rem); }
+  .env-glint:nth-of-type(3) { bottom: -5%; right: 16%; animation-delay: 1.3s; }
+  .env-glint:nth-of-type(4) { bottom: 22%; left: -4%; animation-delay: 1.9s; font-size: clamp(.6rem, 1.8vw, .9rem); }
+  .env-glint:nth-of-type(5) { top: -8%; right: 30%; animation-delay: 2.3s; font-size: clamp(.55rem, 1.6vw, .8rem); }
+  .env-seal {
+    position: absolute; left: 50%; top: 58%; z-index: 4;
+    width: clamp(78px, 19vw, 112px); aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+    border: 0; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; white-space: nowrap;
+    /* Gold wax seal so it stands out on the reddish-brown envelope. */
+    background: radial-gradient(circle at 35% 30%, #FBE7A6, #D9AE4F 55%, #9C7424);
+    box-shadow: 0 0 0 4px rgba(217, 174, 79, .35), 0 6px 14px rgba(40, 10, 0, .55), inset 0 -4px 8px rgba(90, 50, 0, .35);
+    color: #5A1A14;
+    /* Playfair Display italic: a classic high-contrast italic serif — stylish, and S / V stay crisp and readable. */
+    font-family: 'Playfair Display', var(--font-serif); font-style: italic; font-weight: 600; font-size: clamp(1.6rem, 5.2vw, 2.25rem); letter-spacing: .01em; line-height: 1;
+    padding-top: .04em;
+    text-shadow: 0 1px 0 rgba(255, 240, 200, .7);
+    animation: sealPulse 1.8s ease-in-out infinite;
+    transition: transform .45s ease, opacity .45s ease;
+  }
+  .env-seal i { font-family: 'Playfair Display', var(--font-serif); font-style: italic; font-weight: 500; font-size: .7em; margin: 0 .12em; color: #7A2E24; position: relative; top: .12em; }
+  .env-seal:focus-visible { outline: 3px solid #FFF8EC; outline-offset: 4px; }
+  .env-hint { margin: 0; font-size: .8rem; letter-spacing: .22em; text-transform: uppercase; color: var(--lav-1); animation: promptPulse 2.4s ease-in-out infinite; }
+  .env-close {
+    position: absolute; top: 18px; right: 18px;
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 1px solid rgba(241, 232, 255, .4); background: rgba(255, 255, 255, .08); color: var(--lav-1);
+  }
+  /* Opening sequence: seal breaks, flap swings up, letter rises out and comes forward. */
+  #envelope.open .env { animation: none; cursor: default; }
+  #envelope.open .env-shine, #envelope.open .env-glint { animation: none; opacity: 0; }
+  #envelope.open .env-seal { transform: translate(-50%, -50%) scale(1.5); opacity: 0; pointer-events: none; animation: none; }
+  #envelope.open .env-flap { transform: rotateX(180deg); z-index: 0; }
+  #envelope.open .env-letter { animation: letterOut 1.6s cubic-bezier(.3, .7, .2, 1) .9s forwards; }
+  #envelope.open .env-hint, #envelope.open .env-to { animation: fadeOut .5s ease forwards; }
+  @keyframes envFloat { 0%, 100% { transform: translateY(0) rotate(-1deg) scale(1); } 50% { transform: translateY(-8px) rotate(1deg) scale(1.045); } }
+  @keyframes envGlow {
+    0%, 100% { filter: drop-shadow(0 30px 40px rgba(10, 0, 10, .55)) drop-shadow(0 0 6px rgba(255, 210, 120, .25)); }
+    50% { filter: drop-shadow(0 30px 40px rgba(10, 0, 10, .55)) drop-shadow(0 0 22px rgba(255, 214, 130, .7)); }
+  }
+  @keyframes envShine { 0% { background-position: 130% 0; } 60%, 100% { background-position: -30% 0; } }
+  @keyframes glint { 0%, 100% { opacity: 0; transform: scale(.4) rotate(0deg); } 50% { opacity: 1; transform: scale(1.15) rotate(45deg); } }
+  @keyframes sealPulse { 0%, 100% { transform: translate(-50%, -50%) scale(1); } 50% { transform: translate(-50%, -50%) scale(1.07); } }
+  @keyframes letterOut {
+    0% { transform: translateY(0); z-index: 1; }
+    50% { transform: translateY(-78%); z-index: 1; }
+    51% { z-index: 5; }
+    100% { transform: translateY(-14%) scale(1.12); z-index: 5; }
+  }
+
   #rsvp {
     position: fixed; inset: 0; z-index: 870;
     display: grid; place-items: center; padding: 20px;
@@ -952,14 +1111,29 @@
   #rsvp .modal { padding: 36px 26px 26px; }
   #rsvp.show .modal { transform: none; }
   .rsvp-emoji { font-size: 3.2rem; }
+  #rsvp [hidden] { display: none !important; }
+  .rsvp-form { display: grid; gap: 14px; margin-top: 18px; text-align: left; }
+  .rsvp-form label { display: grid; gap: 6px; font-size: .74rem; letter-spacing: .18em; text-transform: uppercase; color: #A9566A; font-weight: 600; }
+  .rsvp-form input {
+    font: inherit; font-size: 1rem; letter-spacing: normal; text-transform: none; color: var(--ink);
+    padding: 12px 16px; border-radius: 14px; border: 1.5px solid var(--lav-3); background: #fff;
+    transition: border-color .25s ease, box-shadow .25s ease;
+  }
+  .rsvp-form input:focus { outline: none; border-color: var(--rose-pink); box-shadow: 0 0 0 4px rgba(224, 69, 123, .15); }
+  .rsvp-count { display: flex; align-items: center; gap: 10px; }
+  .rsvp-count input { flex: 1; text-align: center; -moz-appearance: textfield; }
+  .rsvp-count input::-webkit-inner-spin-button, .rsvp-count input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  .rsvp-step { width: 46px; height: 46px; flex: none; border-radius: 50%; border: 1.5px solid var(--lav-3); background: #fff; color: var(--ink); font-size: 1.3rem; line-height: 1; }
+  .rsvp-step:hover { background: var(--lav-1); }
+  .rsvp-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .rsvp-error { margin: 0; min-height: 1.2em; font-size: .85rem; color: var(--crimson); text-align: center; }
+  .rsvp-form .modal-actions { margin-top: 6px; }
+  .rsvp-form button[type="submit"]:disabled { opacity: .6; cursor: progress; }
   #rsvp.show .rsvp-emoji { animation: popIn .6s cubic-bezier(.2, 1.4, .4, 1) both; }
 
   @media (max-width: 768px) {
     .tabs { width: 100%; }
     .tab { padding: 10px 16px; font-size: .88rem; }
-    .love-line { justify-content: flex-start; }
-    .ms-detail { grid-template-columns: 1fr; }
-    .ms-detail .photo { min-height: 0; aspect-ratio: 16 / 10; }
   }
   @media (max-width: 480px) {
     .tabs { top: 8px; }
@@ -1323,42 +1497,17 @@
     <section id="home" hidden aria-label="Home of Togetherness">
       <div class="container">
         <div class="section-head">
-          <p class="cutu-banner">Hey ! Cutu 💕</p>
           <span class="eyebrow">Welcome to</span>
           <h2 class="section-title">Our Home of <em>Togetherness</em></h2>
           <p class="home-names">Srishti &amp; Vivek</p>
         </div>
 
         <div class="tabs" role="tablist" aria-label="Our home">
-          <button class="tab" type="button" role="tab" id="tab-us" aria-controls="panel-us" aria-selected="true">💞 Togetherness</button>
-          <button class="tab" type="button" role="tab" id="tab-her" aria-controls="panel-her" aria-selected="false" tabindex="-1">🌸 About Her</button>
+          <button class="tab" type="button" role="tab" id="tab-her" aria-controls="panel-her" aria-selected="true">🌸 About Her</button>
           <button class="tab" type="button" role="tab" id="tab-him" aria-controls="panel-him" aria-selected="false" tabindex="-1">🤵 About Him</button>
         </div>
 
-        <div class="panel" role="tabpanel" id="panel-us" aria-labelledby="tab-us">
-          <h3 class="panel-title">Our Story &amp; Journey Together</h3>
-          <p class="panel-sub">Every step, every trip and every tiny moment that led us here.</p>
-
-          <div class="block">
-            <h4 class="block-title">🕰️ Love Timeline</h4>
-            <div class="love-line" id="loveLine"></div>
-            <div class="ms-detail glass" id="msDetail" aria-live="polite"></div>
-          </div>
-
-          <div class="block glass countdown-card">
-            <span class="eyebrow">Countdown to forever</span>
-            <div class="countdown" data-countdown></div>
-            <p class="cd-date" data-wedding-date="long"></p>
-            <button class="btn-soft warm" type="button" data-open-invite>Open our Wedding Invite 💌</button>
-          </div>
-
-          <div class="block">
-            <h4 class="block-title">📸 Memory Showcase</h4>
-            <div class="showcase" id="showcase"></div>
-          </div>
-        </div>
-
-        <div class="panel" role="tabpanel" id="panel-her" aria-labelledby="tab-her" hidden>
+        <div class="panel" role="tabpanel" id="panel-her" aria-labelledby="tab-her">
           <h3 class="panel-title">The Queen of My Heart</h3>
           <p class="panel-sub">A few of the million reasons Srishti is my favourite person.</p>
           <div class="block cards" id="herCards"></div>
@@ -1380,6 +1529,19 @@
             <p class="promise-done" id="promiseDone" aria-live="polite"></p>
           </div>
         </div>
+
+        <section class="memory-lane" aria-labelledby="memoryLaneTitle">
+          <h3 class="panel-title" id="memoryLaneTitle">📸 Memory Lane</h3>
+          <p class="panel-sub">Every photo, every trip and every tiny moment that led us here.</p>
+          <div class="showcase" id="showcase"></div>
+        </section>
+
+        <div class="glass countdown-card home-countdown">
+          <span class="eyebrow">Countdown to forever</span>
+          <div class="countdown" data-countdown></div>
+          <p class="cd-date" data-wedding-date="long"></p>
+          <button class="btn-soft warm" type="button" data-open-invite>Open our Wedding Invite 💌</button>
+        </div>
       </div>
     </section>
   </main>
@@ -1395,8 +1557,8 @@
       <div class="photo" id="celebratePhoto" data-emoji="💍"></div>
       <h2 id="celebrateTitle">She said YES!</h2>
       <p>Srishti, you just made me the happiest person in the whole universe.</p>
-      <p>Thank you for choosing me — today, tomorrow, and every autumn after this. I promise to love you loudly, laugh with you endlessly, and hold your hand through every chapter still to come.</p>
-      <p>Here's to forever, my love. 💛</p>
+      <p>Thank you for choosing me — my better half, my partner in crime, my favourite person to come home to. I promise to stand by you, laugh with you and hold your hand, always.</p>
+      <p>Here's to a lifetime of love, laughter and happiness. 💛</p>
       <div class="sign">— Vivek</div>
       <div class="modal-actions">
         <button class="btn-soft" id="againBtn" type="button">Celebrate again 🎉</button>
@@ -1414,31 +1576,63 @@
       <h2 class="cutu-text script-glow" id="cutuTitle">Hey ! Cutu 💕</h2>
       <p class="cutu-sub">You just said yes to forever. Our home is now open, just for us.</p>
     </div>
-    <button class="enter-prompt" id="cutuBtn" type="button">Click anywhere to continue ✨</button>
+    <div class="cutu-cta" aria-live="polite">
+      <p class="cutu-tease" data-tease="1">Ready for the big reveal? ✨</p>
+      <p class="cutu-tease" data-tease="2">Something special is on its way… 💫</p>
+      <div class="cutu-final">
+        <p class="cta-line">One more surprise, sealed with love…</p>
+        <button class="invite-cta" id="cutuBtn" type="button">💌 Open our wedding invitation</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="envelope" role="dialog" aria-modal="true" aria-label="Wedding invitation envelope">
+    <button class="env-close" id="envClose" type="button" aria-label="Close envelope">✕</button>
+    <div class="env-stage">
+      <p class="env-to">Two hearts, one celebration<b>Our Forever Begins</b></p>
+      <div class="env" id="envBody">
+        <div class="env-back"></div>
+        <div class="env-letter" aria-hidden="true">
+          <span class="el-eyebrow">The Countdown to Forever</span>
+          <span class="el-names">Srishti &amp; Vivek</span>
+          <span class="el-meta">29 – 30 November 2026 · Jabalpur</span>
+        </div>
+        <div class="env-pocket"></div>
+        <div class="env-flap"></div>
+        <div class="env-shine" aria-hidden="true"></div>
+        <span class="env-glint" aria-hidden="true">✦</span>
+        <span class="env-glint" aria-hidden="true">✦</span>
+        <span class="env-glint" aria-hidden="true">✧</span>
+        <span class="env-glint" aria-hidden="true">✦</span>
+        <span class="env-glint" aria-hidden="true">✧</span>
+        <button class="env-seal" id="envSeal" type="button" aria-label="Break the seal and open the invitation">S<i>&amp;</i>V</button>
+      </div>
+      <p class="env-hint">Tap the seal to open</p>
+    </div>
   </div>
 
   <div id="invite" role="dialog" aria-modal="true" aria-labelledby="inviteTitle">
     <article class="invite-card">
-      <span class="flora tl" aria-hidden="true">🌹🌸</span>
-      <span class="flora tr" aria-hidden="true">🌸🌷</span>
-      <span class="flora bl" aria-hidden="true">🌷🌼</span>
-      <span class="flora br" aria-hidden="true">🌼🌹</span>
+      <span class="flora tl" aria-hidden="true"></span>
+      <span class="flora tr" aria-hidden="true"></span>
+      <span class="flora bl" aria-hidden="true"></span>
+      <span class="flora br" aria-hidden="true"></span>
       <button class="invite-close" id="inviteClose" type="button" aria-label="Close invite">✕</button>
       <span class="inv-eyebrow">Together with their families</span>
       <h2 class="inv-names" id="inviteTitle">Srishti <span>&amp;</span> Vivek</h2>
-      <p class="inv-text">joyfully invite you to celebrate the beginning of their forever.</p>
+      <p class="inv-text">Seven sacred vows, two families, one joyous celebration — we would love for you to be there as we begin our new life together.</p>
       <div class="gold-rule"></div>
       <div class="save-date">
         <h3>Save the Date</h3>
         <div class="sd-grid">
-          <div><small>Date</small><strong data-wedding-date="short"></strong></div>
-          <div><small>Time</small><strong data-wedding-time></strong></div>
-          <div><small>Venue</small><strong data-wedding-venue></strong></div>
+          <div><small>Dates</small><strong>29 – 30 Nov 2026</strong></div>
+          <div><small>Days</small><strong>Sunday &amp; Monday</strong></div>
+          <div><small>Venue</small><strong data-wedding-address></strong></div>
         </div>
-        <p class="inv-address" data-wedding-address></p>
+        <p class="inv-tagline">The Countdown to Forever</p>
         <div class="countdown small" data-countdown></div>
       </div>
-      <button class="btn-yes btn-rsvp" id="rsvpBtn" type="button">RSVP — I'll be there 💛</button>
+      <button class="btn-yes btn-rsvp" id="rsvpBtn" type="button">RSVP — I'll be there 💗</button>
       <div class="events">
         <h3>The Celebrations</h3>
         <div id="eventList"></div>
@@ -1448,12 +1642,37 @@
 
   <div id="rsvp" role="dialog" aria-modal="true" aria-labelledby="rsvpTitle">
     <div class="modal">
-      <div class="rsvp-emoji" aria-hidden="true">🥂</div>
-      <h2 id="rsvpTitle">Yay!</h2>
-      <p>Can't wait to celebrate with you! 💛</p>
-      <p>Your seat is saved. Bring your dancing shoes.</p>
-      <div class="modal-actions">
-        <button class="btn-soft warm" id="rsvpClose" type="button">Back to the invite</button>
+      <div data-rsvp-step="form">
+        <div class="rsvp-emoji" aria-hidden="true">💌</div>
+        <h2 id="rsvpTitle">Will you join us?</h2>
+        <p>Let us know who's coming so we can save your seats.</p>
+        <form class="rsvp-form" id="rsvpForm" novalidate>
+          <label>Your name
+            <input type="text" name="name" id="rsvpName" autocomplete="name" maxlength="80" required placeholder="e.g. Ananya Sharma">
+          </label>
+          <label>Number of guests (including you)
+            <span class="rsvp-count">
+              <button class="rsvp-step" type="button" data-step="-1" aria-label="One fewer guest">−</button>
+              <input type="number" name="guests" id="rsvpGuests" inputmode="numeric" min="1" max="20" value="1" required>
+              <button class="rsvp-step" type="button" data-step="1" aria-label="One more guest">+</button>
+            </span>
+          </label>
+          <label class="rsvp-hp" aria-hidden="true">Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+          <p class="rsvp-error" id="rsvpError" role="alert"></p>
+          <div class="modal-actions">
+            <button class="btn-soft" id="rsvpCancel" type="button">Not now</button>
+            <button class="btn-soft warm" id="rsvpSubmit" type="submit">Send RSVP 💗</button>
+          </div>
+        </form>
+      </div>
+      <div data-rsvp-step="thanks" hidden>
+        <div class="rsvp-emoji" aria-hidden="true">🥂</div>
+        <h2>Yay!</h2>
+        <p id="rsvpThanks">Can't wait to celebrate with you! 💛</p>
+        <p>Your seats are saved. Bring your dancing shoes.</p>
+        <div class="modal-actions">
+          <button class="btn-soft warm" id="rsvpClose" type="button">Back to the invite</button>
+        </div>
       </div>
     </div>
   </div>
@@ -1501,27 +1720,26 @@
     { img: 'images/proposal.jpg', caption: 'You & me' },
     { img: 'images/celebration.jpg', caption: 'Forever' }
   ];
+  // GALLERY + the "coming soon" tile fill exactly two rows of 4 (four rows of 2 on phones).
 
   const MUSIC = {
     intro: 'music/love-mashup.mp3',
-    proposal: 'music/suno-na.mp3'
+    proposal: 'music/suno-na.mp3',
+    celebration: 'music/rhtdm.mp3', // plays after she says yes
+    wedding: 'music/mangalyam.mp3' // plays while the envelope and wedding invite are open
   };
 
   // Date is local time in ISO format.
   const WEDDING = {
-    date: '2027-02-14T18:30:00',
-    time: '6:30 PM onwards',
-    venue: 'The Autumn Garden',
-    address: 'Venue address, City'
+    date: '2026-11-30T20:00:00', // Jaimala & Pheras — what the countdowns count down to
+    time: '8:00 PM onwards',
+    venue: 'Sports Club',
+    address: 'Sports Club, Jabalpur'
   };
 
-  const MILESTONES = [
-    { when: 'Chapter 1', title: 'First Meeting', emoji: '☕', img: 'images/memory-1.jpg', text: 'The day it all began. One conversation turned into a hundred, and somehow I never wanted it to end.' },
-    { when: 'Chapter 2', title: 'First Date', emoji: '🌙', img: 'images/memory-2.jpg', text: 'Nervous smiles, too much food and a walk that went on far longer than planned.' },
-    { when: 'Chapter 3', title: 'Favourite Trip', emoji: '✈️', img: 'images/memory-3.jpg', text: 'New roads, wrong turns and sunsets I only remember because you were next to me.' },
-    { when: 'Chapter 4', title: 'Unforgettable Moment', emoji: '🌟', img: 'images/memory-4.jpg', text: 'The moment I knew, without a single doubt, that it would always be you.' },
-    { when: 'Today', title: 'She Said Yes', emoji: '💍', img: 'images/celebration.jpg', text: 'The best chapter yet, and only the beginning of our forever.' }
-  ];
+  // Google Apps Script web-app URL that stores RSVPs in a Google Sheet and emails the
+  // sheet as Excel (see rsvp/apps-script.gs). Paste the deployment URL ending in /exec.
+  const RSVP_ENDPOINT = '';
 
   const HER_CARDS = [
     { icon: '🌟', title: 'Her Best Qualities', items: ['The kindest heart I know', 'Brave, curious and endlessly patient', 'Makes everyone feel at home'] },
@@ -1548,12 +1766,13 @@
     'I promise to love you more with every autumn'
   ];
 
+  // All events are at WEDDING.venue unless an event sets its own `venue`.
   const EVENTS = [
-    { name: 'Mehendi', emoji: '🌿', when: 'Date TBA', time: '4:00 PM', venue: 'Venue TBA', dress: 'Dress code: shades of green & gold', text: 'Henna, music and lots of giggles.' },
-    { name: 'Haldi', emoji: '🌼', when: 'Date TBA', time: '10:00 AM', venue: 'Venue TBA', dress: 'Dress code: sunshine yellow', text: 'A burst of turmeric, blessings and splashes of joy.' },
-    { name: 'Sangeet', emoji: '🎶', when: 'Date TBA', time: '7:00 PM', venue: 'Venue TBA', dress: 'Dress code: glam & sparkle', text: 'An evening of dance, music and family performances.' },
-    { name: 'Wedding Ceremony', emoji: '💍', when: 'Date TBA', time: '6:30 PM', venue: 'The Autumn Garden', dress: 'Dress code: traditional festive', text: 'The moment two hearts become one, with all of you as witnesses.' },
-    { name: 'Reception', emoji: '🥂', when: 'Date TBA', time: '8:00 PM', venue: 'Venue TBA', dress: 'Dress code: evening formal', text: 'Dinner, toasts and dancing into our forever.' }
+    { day: 'Sunday, 29th November 2026', name: 'Mehndi', emoji: '🌿', time: '11:00 AM', theme: { name: 'Green', hex: '#5E9E5A' }, text: 'Photoshoot + Function — henna, laughter and lots of love.' },
+    { day: 'Sunday, 29th November 2026', name: 'Engagement & Sangeet', emoji: '💃', time: '6:00 PM', text: 'Dance, Dazzle & Make it a Night to Remember!' },
+    { day: 'Monday, 30th November 2026', name: 'Haldi & Carnival', emoji: '🌼', time: '9:00 AM', theme: { name: 'Yellow', hex: '#F2C230' }, text: 'Ubtan + Phool Wale — turmeric, flowers and a carnival of colours.' },
+    { day: 'Monday, 30th November 2026', name: 'Matrika Pooja', emoji: '🪔', time: '5:00 PM', text: 'Seeking the blessings of the divine mothers before the big day.' },
+    { day: 'Monday, 30th November 2026', name: 'Jaimala & Pheras', emoji: '💍', time: '8:00 PM onwards', text: 'Garlands, seven sacred vows and the beginning of our forever.' }
   ];
 
   const NO_LINES = [
@@ -1784,9 +2003,11 @@
       const btn = $('#unlockBtn');
       btn.hidden = false;
       $('#proposal').hidden = false;
+      // Start buffering the celebration song so it plays instantly on "yes".
+      if (audio.tracks.celebration) audio.tracks.celebration.preload = 'auto';
       miniConfetti({ y: 0.7 });
       btn.addEventListener('click', () => {
-        audio.crossfadeTo('proposal');
+        if (!accepted) audio.crossfadeTo('proposal');
         $('#proposal').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
       });
     }
@@ -2061,7 +2282,8 @@
   new IntersectionObserver(([entry]) => {
     document.body.classList.toggle('at-proposal', entry.isIntersecting);
     // One-way switch: once she reaches the proposal, love-mashup stops for good.
-    if (started && entry.isIntersecting) audio.crossfadeTo('proposal');
+    // After "yes", coming back to the proposal plays love-mashup instead of the proposal song.
+    if (started && entry.isIntersecting) audio.crossfadeTo(accepted ? 'intro' : 'proposal');
   }, { threshold: 0.35 }).observe($('#proposal'));
 
   function overlaps(x, y, w, h, r, gap) {
@@ -2219,27 +2441,6 @@
     });
   });
 
-  function buildLoveLine() {
-    const line = $('#loveLine');
-    const detail = $('#msDetail');
-    const show = (i) => {
-      const m = MILESTONES[i];
-      btns.forEach((b, j) => b.setAttribute('aria-pressed', String(i === j)));
-      const body = el('div', 'ms-detail-body');
-      body.append(el('span', 'memory-tag', m.when), el('h3', null, m.title), el('p', null, m.text));
-      detail.replaceChildren(makePhoto(m.img, m.title, m.emoji), body);
-    };
-    const btns = MILESTONES.map((m, i) => {
-      const b = el('button', 'ms-btn');
-      b.type = 'button';
-      b.append(el('span', 'ms-dot', m.emoji), el('span', null, m.title));
-      b.addEventListener('click', () => show(i));
-      line.appendChild(b);
-      return b;
-    });
-    show(0);
-  }
-
   function buildShowcase() {
     const root = $('#showcase');
     GALLERY.forEach((g, i) => {
@@ -2321,20 +2522,31 @@
 
   function buildEvents() {
     const root = $('#eventList');
+    let lastDay = null;
     EVENTS.forEach((ev) => {
+      if (ev.day !== lastDay) {
+        root.appendChild(el('h4', 'ev-day', ev.day));
+        lastDay = ev.day;
+      }
       const item = el('div', 'event');
       const head = el('button', 'event-head');
       head.type = 'button';
       head.setAttribute('aria-expanded', 'false');
-      head.append(el('span', 'ev-emoji', ev.emoji), el('b', null, ev.name), el('small', null, ev.when), el('span', 'chev', '⌄'));
+      head.append(el('span', 'ev-emoji', ev.emoji), el('b', null, ev.name), el('small', null, ev.time), el('span', 'chev', '⌄'));
       const body = el('div', 'event-body');
       const inner = el('div');
       inner.append(
-        el('p', null, `📅 ${ev.when} · 🕰️ ${ev.time}`),
-        el('p', null, `📍 ${ev.venue}`),
-        el('p', null, `👗 ${ev.dress}`),
-        el('p', null, ev.text)
+        el('p', null, `🕰️ ${ev.time}`),
+        el('p', null, `📍 ${ev.venue || WEDDING.address}`)
       );
+      if (ev.theme) {
+        const theme = el('p', null);
+        const dot = el('span', 'swatch');
+        dot.style.background = ev.theme.hex;
+        theme.append(dot, `Theme colour: ${ev.theme.name}`);
+        inner.appendChild(theme);
+      }
+      inner.appendChild(el('p', null, ev.text));
       body.appendChild(inner);
       head.addEventListener('click', () => {
         const open = !item.classList.contains('open');
@@ -2359,41 +2571,155 @@
     document.body.classList.add('no-scroll');
     $('#inviteClose').focus({ preventScroll: true });
   }
+  let afterInvite = null; // e.g. show the "She said YES" card once the invite is closed
+  // Mangalyam plays for the envelope + invite; the previous track resumes when they close.
+  let musicBeforeInvite = null;
+  function playWeddingMusic() {
+    if (audio.current !== 'wedding') musicBeforeInvite = audio.current;
+    audio.crossfadeTo('wedding');
+  }
+  function restoreMusicAfterInvite() {
+    if (audio.current === 'wedding' && musicBeforeInvite) audio.crossfadeTo(musicBeforeInvite);
+    musicBeforeInvite = null;
+  }
   function closeInvite() {
+    restoreMusicAfterInvite();
     invite.classList.remove('show');
     document.body.classList.remove('no-scroll');
+    if (afterInvite) { const next = afterInvite; afterInvite = null; setTimeout(next, 400); }
   }
-  document.querySelectorAll('[data-open-invite]').forEach((b) => b.addEventListener('click', openInvite));
+
+  /* Sealed envelope: tap the seal, the flap lifts, the letter rises and opens into the invite. */
+  const envelope = $('#envelope');
+  const envTimers = [];
+  function openEnvelope(fromCutu) {
+    envTimers.splice(0).forEach(clearTimeout);
+    afterInvite = fromCutu ? openModal : null;
+    playWeddingMusic(); // inside the tap, so the browser allows playback
+    if (reduceMotion) { showInviteFromEnvelope(); return; }
+    envelope.classList.remove('open');
+    envelope.classList.add('show');
+    document.body.classList.add('no-scroll');
+    $('#envSeal').focus({ preventScroll: true });
+  }
+  function breakSeal() {
+    if (envelope.classList.contains('open')) return;
+    envelope.classList.add('open');
+    envTimers.push(
+      setTimeout(() => miniConfetti({ y: 0.45 }), 1100),
+      setTimeout(showInviteFromEnvelope, 2900)
+    );
+  }
+  function showInviteFromEnvelope() {
+    cutu.classList.remove('show'); // hide quietly; the YES card follows the invite instead
+    openInvite();
+    envelope.classList.remove('show');
+    setTimeout(() => envelope.classList.remove('open'), 800);
+  }
+  function closeEnvelope() {
+    envTimers.splice(0).forEach(clearTimeout);
+    envelope.classList.remove('show', 'open');
+    afterInvite = null;
+    restoreMusicAfterInvite();
+    if (!cutu.classList.contains('show')) document.body.classList.remove('no-scroll');
+  }
+  $('#envSeal').addEventListener('click', (e) => { e.stopPropagation(); breakSeal(); });
+  $('#envBody').addEventListener('click', breakSeal);
+  $('#envClose').addEventListener('click', closeEnvelope);
+
+  document.querySelectorAll('[data-open-invite]').forEach((b) => b.addEventListener('click', () => openEnvelope(false)));
   $('#inviteClose').addEventListener('click', closeInvite);
   invite.addEventListener('click', (e) => { if (e.target === invite) closeInvite(); });
 
+  const rsvpForm = $('#rsvpForm');
+  const rsvpGuests = $('#rsvpGuests');
+  const rsvpError = $('#rsvpError');
+  const RSVP_SENT_KEY = 'sv-rsvp-sent';
+  const clampGuests = (v) => Math.min(20, Math.max(1, Number.parseInt(v, 10) || 1));
+
+  function showRsvpStep(step) {
+    rsvp.querySelectorAll('[data-rsvp-step]').forEach((n) => { n.hidden = n.dataset.rsvpStep !== step; });
+  }
+  function markRsvpSent() { $('#rsvpBtn').textContent = 'RSVP sent ✓ — update'; }
+  try { if (localStorage.getItem(RSVP_SENT_KEY)) markRsvpSent(); } catch (_) { /* storage blocked */ }
+
   $('#rsvpBtn').addEventListener('click', () => {
+    showRsvpStep('form');
+    rsvpError.textContent = '';
     rsvp.classList.add('show');
-    miniConfetti({ y: 0.5 });
-    $('#rsvpBtn').textContent = 'RSVP sent ✓';
-    $('#rsvpClose').focus({ preventScroll: true });
+    $('#rsvpName').focus({ preventScroll: true });
   });
+  rsvp.querySelectorAll('.rsvp-step').forEach((b) => b.addEventListener('click', () => {
+    rsvpGuests.value = clampGuests(rsvpGuests.value) + Number(b.dataset.step);
+    rsvpGuests.value = clampGuests(rsvpGuests.value);
+  }));
+  rsvpGuests.addEventListener('change', () => { rsvpGuests.value = clampGuests(rsvpGuests.value); });
+
+  rsvpForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = $('#rsvpName').value.trim().replace(/\s+/g, ' ');
+    const guests = Number.parseInt(rsvpGuests.value, 10);
+    if (!name) { rsvpError.textContent = 'Please tell us your name.'; $('#rsvpName').focus(); return; }
+    if (!(guests >= 1 && guests <= 20)) { rsvpError.textContent = 'Number of guests should be between 1 and 20.'; rsvpGuests.focus(); return; }
+    if (!RSVP_ENDPOINT) { rsvpError.textContent = 'RSVPs are not connected yet. Please message Vivek directly.'; return; }
+
+    const submit = $('#rsvpSubmit');
+    submit.disabled = true;
+    submit.textContent = 'Sending…';
+    rsvpError.textContent = '';
+    try {
+      const body = new URLSearchParams({ name, guests: String(guests), website: rsvpForm.elements.website.value });
+      const res = await fetch(RSVP_ENDPOINT, { method: 'POST', body });
+      const data = await res.json();
+      if (!data.ok) throw new Error(data.error || 'rejected');
+      try { localStorage.setItem(RSVP_SENT_KEY, '1'); } catch (_) { /* storage blocked */ }
+      markRsvpSent();
+      $('#rsvpThanks').textContent = `Can't wait to celebrate with you, ${name.split(' ')[0]}! 💛 (${guests} ${guests === 1 ? 'guest' : 'guests'})`;
+      showRsvpStep('thanks');
+      miniConfetti({ y: 0.5 });
+      $('#rsvpClose').focus({ preventScroll: true });
+    } catch (err) {
+      console.error('RSVP failed', err);
+      rsvpError.textContent = "Couldn't send your RSVP. Please check your connection and try again.";
+    } finally {
+      submit.disabled = false;
+      submit.textContent = 'Send RSVP 💗';
+    }
+  });
+  $('#rsvpCancel').addEventListener('click', () => rsvp.classList.remove('show'));
   $('#rsvpClose').addEventListener('click', () => rsvp.classList.remove('show'));
   rsvp.addEventListener('click', (e) => { if (e.target === rsvp) rsvp.classList.remove('show'); });
 
   const cutu = $('#cutu');
-  function closeCutu() {
-    if (!cutu.classList.contains('show')) return;
+  // Esc-only exit from the post-YES screen (no on-screen hint): returns to the proposal underneath.
+  // Let rhtdm play a while: two teaser lines, then the invite button drops in.
+  const CUTU_STAGES = [['tease-1', 3500], ['tease-2', 7000], ['cta', 10500]];
+  const cutuTimers = [];
+  function startCutuSequence() {
+    cutuTimers.splice(0).forEach(clearTimeout);
+    delete cutu.dataset.stage;
+    CUTU_STAGES.forEach(([stage, at]) => cutuTimers.push(setTimeout(() => {
+      cutu.dataset.stage = stage;
+      if (stage === 'cta') $('#cutuBtn').focus({ preventScroll: true });
+    }, at)));
+  }
+  function leaveCutu() {
+    cutuTimers.splice(0).forEach(clearTimeout);
     cutu.classList.remove('show');
     document.body.classList.remove('no-scroll');
-    setTimeout(openModal, 500);
   }
-  cutu.addEventListener('click', closeCutu);
+  $('#cutuBtn').addEventListener('click', (e) => { e.stopPropagation(); openEnvelope(true); });
 
   yesBtn.addEventListener('click', () => {
     if (accepted) { fireworks(); return; }
     accepted = true;
     document.body.classList.add('accepted');
+    audio.crossfadeTo('celebration'); // inside the tap, so the browser allows playback
     fireworks();
     revealHome();
     cutu.classList.add('show');
     document.body.classList.add('no-scroll');
-    $('#cutuBtn').focus({ preventScroll: true });
+    startCutuSequence();
   });
   $('#againBtn').addEventListener('click', fireworks);
   $('#closeBtn').addEventListener('click', goHome);
@@ -2401,7 +2727,8 @@
 
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
-    if (cutu.classList.contains('show')) { closeCutu(); return; }
+    if (envelope.classList.contains('show')) { closeEnvelope(); return; }
+    if (cutu.classList.contains('show')) { leaveCutu(); return; } // hidden shortcut back to the proposal
     if (rsvp.classList.contains('show')) { rsvp.classList.remove('show'); return; }
     if (lightbox.classList.contains('show')) { lightbox.classList.remove('show'); return; }
     if (invite.classList.contains('show')) { closeInvite(); return; }
@@ -2418,7 +2745,6 @@
   makePhoto(PHOTOS.celebration, 'Srishti and Vivek', '💍', $('#celebratePhoto'));
   buildTimeline();
   setupScratchNotes();
-  buildLoveLine();
   buildShowcase();
   buildCards($('#herCards'), HER_CARDS);
   buildCards($('#himCards'), HIM_CARDS);

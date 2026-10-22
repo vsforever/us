@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 120 120" width="120" height="120">
+  <!-- Madhubani-style frame used as a 9-slice border-image (slice 40).
+       Edge tile: crimson & gold bands, sawtooth triangles, a lotus-bud vine and kachni hatching.
+       Corner tile: framed eight-petal lotus. Other edges/corners are rotations of the top-left set. -->
+  <defs>
+    <g id="edge">
+      <rect width="40" height="40" fill="#FFF6E6"/>
+      <rect y="0" width="40" height="4" fill="#B3261E"/>
+      <rect y="4" width="40" height="2" fill="#E8A317"/>
+      <path d="M0 7H40M0 14H40M0 32H40" stroke="#3A1A12" stroke-width=".8"/>
+      <path d="M0 7.4L5 13.2L10 7.4L15 13.2L20 7.4L25 13.2L30 7.4L35 13.2L40 7.4Z" fill="#B3261E"/>
+      <rect y="14.4" width="40" height="17.2" fill="#FFE9B8"/>
+      <path d="M0 23C6.67 16 13.33 16 20 23C26.67 30 33.33 30 40 23" fill="none" stroke="#2F6B3A" stroke-width="1.4"/>
+      <path d="M10 19.5C6.5 22 7 26.5 10 29.5C13 26.5 13.5 22 10 19.5Z" fill="#E0457B" stroke="#B3261E" stroke-width=".7"/>
+      <path d="M10 22.5V27.5" stroke="#B3261E" stroke-width=".5"/>
+      <path d="M30 26.5C26.5 24 27 19.5 30 16.5C33 19.5 33.5 24 30 26.5Z" fill="#3E8A4A" stroke="#2F6B3A" stroke-width=".7"/>
+      <path d="M30 18.5V24.5" stroke="#FFE9B8" stroke-width=".5"/>
+      <circle cx="20" cy="17" r="1.2" fill="#B3261E"/>
+      <circle cx="20" cy="29" r="1.2" fill="#B3261E"/>
+      <circle cx="0" cy="29" r="1.2" fill="#E8A317"/>
+      <circle cx="40" cy="29" r="1.2" fill="#E8A317"/>
+      <path d="M1.25 33.4V37M3.75 33.4V37M6.25 33.4V37M8.75 33.4V37M11.25 33.4V37M13.75 33.4V37M16.25 33.4V37M18.75 33.4V37M21.25 33.4V37M23.75 33.4V37M26.25 33.4V37M28.75 33.4V37M31.25 33.4V37M33.75 33.4V37M36.25 33.4V37M38.75 33.4V37" stroke="#B3261E" stroke-width=".9"/>
+      <rect y="37.6" width="40" height="2.4" fill="#B3261E"/>
+    </g>
+    <ellipse id="petal" cx="20" cy="12.5" rx="3" ry="6.2"/>
+    <g id="corner">
+      <rect width="40" height="40" fill="#B3261E"/>
+      <rect x="3" y="3" width="34" height="34" fill="#E8A317"/>
+      <rect x="5.5" y="5.5" width="29" height="29" fill="#FFF6E6" stroke="#3A1A12" stroke-width=".8"/>
+      <g stroke="#7A1A14" stroke-width=".6">
+        <use xlink:href="#petal" href="#petal" fill="#B3261E"/>
+        <use xlink:href="#petal" href="#petal" fill="#F4A6C0" transform="rotate(45 20 20)"/>
+        <use xlink:href="#petal" href="#petal" fill="#B3261E" transform="rotate(90 20 20)"/>
+        <use xlink:href="#petal" href="#petal" fill="#F4A6C0" transform="rotate(135 20 20)"/>
+        <use xlink:href="#petal" href="#petal" fill="#B3261E" transform="rotate(180 20 20)"/>
+        <use xlink:href="#petal" href="#petal" fill="#F4A6C0" transform="rotate(225 20 20)"/>
+        <use xlink:href="#petal" href="#petal" fill="#B3261E" transform="rotate(270 20 20)"/>
+        <use xlink:href="#petal" href="#petal" fill="#F4A6C0" transform="rotate(315 20 20)"/>
+      </g>
+      <circle cx="20" cy="20" r="4" fill="#E8A317" stroke="#3A1A12" stroke-width=".7"/>
+      <circle cx="20" cy="20" r="1.6" fill="#B3261E"/>
+      <circle cx="8.5" cy="8.5" r="1.2" fill="#2F6B3A"/>
+      <circle cx="31.5" cy="8.5" r="1.2" fill="#2F6B3A"/>
+      <circle cx="8.5" cy="31.5" r="1.2" fill="#2F6B3A"/>
+      <circle cx="31.5" cy="31.5" r="1.2" fill="#2F6B3A"/>
+    </g>
+  </defs>
+  <use xlink:href="#corner" href="#corner"/>
+  <use xlink:href="#corner" href="#corner" transform="rotate(90 60 60)"/>
+  <use xlink:href="#corner" href="#corner" transform="rotate(180 60 60)"/>
+  <use xlink:href="#corner" href="#corner" transform="rotate(270 60 60)"/>
+  <use xlink:href="#edge" href="#edge" x="40"/>
+  <use xlink:href="#edge" href="#edge" x="40" transform="rotate(90 60 60)"/>
+  <use xlink:href="#edge" href="#edge" x="40" transform="rotate(180 60 60)"/>
+  <use xlink:href="#edge" href="#edge" x="40" transform="rotate(270 60 60)"/>
+</svg>
