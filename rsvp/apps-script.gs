@@ -4,10 +4,14 @@
  * Each RSVP is appended to the "RSVPs" tab of the Google Sheet this script is bound to,
  * then the whole sheet is emailed as one Excel (.xlsx) file to NOTIFY_EMAIL.
  *
- * Setup: Google Sheet → Extensions → Apps Script → paste this file → Deploy → New deployment
- *        → type "Web app", Execute as "Me", Who has access "Anyone" → copy the /exec URL
- *        into RSVP_ENDPOINT in index.html.
+ * Setup (either way works):
+ *   A) Google Sheet → Extensions → Apps Script → paste this file (leave SPREADSHEET_ID empty).
+ *   B) script.google.com → New project → paste this file → set SPREADSHEET_ID to the ID in the
+ *      sheet URL: docs.google.com/spreadsheets/d/<SPREADSHEET_ID>/edit
+ * Then Deploy → New deployment → type "Web app", Execute as "Me", Who has access "Anyone"
+ * → copy the /exec URL into RSVP_ENDPOINT in index.html.
  */
+const SPREADSHEET_ID = '1DQ_h6YbGHFd3s9fw4f37vYA5yYN0gQiBx-cMw5knl6I'; // only needed for setup B (standalone script)
 const NOTIFY_EMAIL = 'vivekindia136@gmail.com';
 const SHEET_NAME = 'RSVPs';
 const HEADERS = ['Submitted at', 'Name', 'Guests'];
@@ -48,7 +52,7 @@ function doGet() {
 }
 
 function getSheet_() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = SPREADSHEET_ID ? SpreadsheetApp.openById(SPREADSHEET_ID) : SpreadsheetApp.getActiveSpreadsheet();
   let sheet = ss.getSheetByName(SHEET_NAME);
   if (!sheet) sheet = ss.insertSheet(SHEET_NAME);
   if (sheet.getLastRow() === 0) {
