@@ -121,6 +121,20 @@
     pointer-events: none;
     animation: burst var(--bdur) cubic-bezier(.12, .75, .3, 1) forwards;
   }
+  /* Burst/shower petals need an explicit box (they are spans); blooms are emoji flowers. */
+  .burst .p, .shower .p { display: block; width: var(--size); height: var(--size); }
+  .bloom { display: block; font-size: var(--size); line-height: 1; filter: drop-shadow(0 2px 6px rgba(255, 120, 170, .5)); }
+  /* Flower shower that rains over the whole intro screen when the heart opens. */
+  .shower {
+    position: absolute; top: 0; left: var(--x); z-index: 2;
+    pointer-events: none;
+    animation: shower var(--fdur) cubic-bezier(.3, .1, .6, 1) var(--fdelay) both;
+  }
+  @keyframes shower {
+    0% { transform: translate3d(0, -14vh, 0) rotate(0deg); opacity: 0; }
+    8% { opacity: 1; }
+    100% { transform: translate3d(var(--drift), 112vh, 0) rotate(var(--br)); opacity: .9; }
+  }
   @keyframes heartbeat {
     0%, 100% { transform: scale(1); }
     14% { transform: scale(1.18); }
@@ -182,6 +196,18 @@
   #cutu .orb.b { width: 40vmax; height: 40vmax; right: -12vmax; bottom: -12vmax; background: rgba(255, 143, 184, .45); animation-delay: -4s; }
   #cutu .orb.c { width: 26vmax; height: 26vmax; left: 40%; top: 55%; background: rgba(255, 227, 138, .35); animation-delay: -8s; }
   @keyframes drift { to { transform: translate(6vmax, -5vmax) scale(1.15); } }
+  /* Photo backdrop, dimmed with a plum wash so the text and orbs still glow on top. */
+  .cutu-bg {
+    position: absolute; inset: -20px;
+    background-size: cover; background-position: center 30%;
+    filter: blur(3px) saturate(.95) brightness(.7);
+    transform: scale(1.04);
+  }
+  .cutu-bg::after {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 50% 45%, rgba(74, 24, 64, .62) 0%, rgba(42, 14, 44, .8) 60%, rgba(23, 8, 24, .92) 100%);
+  }
   .cutu-inner { position: relative; z-index: 1; }
   #cutu.show .cutu-inner { animation: heyIn 1.6s ease both; }
   .cutu-text { font-size: clamp(3.6rem, 15vw, 8rem); margin: 0; }
@@ -283,27 +309,48 @@
     overflow: hidden;
     padding: 80px 20px;
   }
+  /* Back layer: the same photo, blurred, filling the screen so the sharp copy never looks letterboxed. */
   .hero-bg {
-    position: absolute; inset: -4%;
+    position: absolute; inset: -6%;
     background:
-      radial-gradient(circle at 20% 25%, rgba(255, 227, 138, .55), transparent 45%),
-      radial-gradient(circle at 80% 70%, rgba(185, 163, 242, .6), transparent 50%),
-      linear-gradient(160deg, var(--lav-1), var(--peach) 60%, #FFF2C2);
+      radial-gradient(circle at 20% 25%, rgba(255, 227, 138, .35), transparent 45%),
+      linear-gradient(160deg, #4A2A55, #6B3A4F 60%, #3A2440);
     background-size: cover;
-    background-position: center 30%;
+    background-position: center 40%;
+    filter: blur(22px) brightness(.5) saturate(1.1);
+  }
+  /* Front layer: the whole portrait, sharp and uncropped (contain), fading softly into the blurred copy. */
+  .hero-photo {
+    position: absolute; inset: 0;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    filter: brightness(.68) saturate(1.02);
     animation: kenburns 26s ease-in-out infinite alternate;
+    -webkit-mask-image: linear-gradient(90deg, transparent calc(50% - 37vh), #000 calc(50% - 22vh), #000 calc(50% + 22vh), transparent calc(50% + 37vh)), linear-gradient(180deg, #000 70%, transparent 100%);
+    -webkit-mask-composite: source-in;
+    mask-image: linear-gradient(90deg, transparent calc(50% - 37vh), #000 calc(50% - 22vh), #000 calc(50% + 22vh), transparent calc(50% + 37vh)), linear-gradient(180deg, #000 70%, transparent 100%);
+    mask-composite: intersect;
+  }
+  /* Portrait screens: the photo already fits, so fill the width instead of leaving bands. */
+  @media (max-aspect-ratio: 4/5) {
+    .hero-photo {
+      background-size: cover; background-position: center 35%;
+      -webkit-mask-image: linear-gradient(180deg, #000 70%, transparent 100%);
+      mask-image: linear-gradient(180deg, #000 70%, transparent 100%);
+    }
   }
   /* Fade the hero into the page glow instead of ending on a hard edge. */
   .hero-bg, .hero-overlay {
     -webkit-mask-image: linear-gradient(180deg, #000 70%, transparent 100%);
     mask-image: linear-gradient(180deg, #000 70%, transparent 100%);
   }
+  /* Plum dimming veil: darkest at the edges, a touch lighter behind the text. */
   .hero-overlay {
     position: absolute; inset: 0;
     background:
-      radial-gradient(ellipse at 50% 45%, rgba(255, 240, 180, .45) 0%, transparent 55%),
-      linear-gradient(180deg, rgba(241, 232, 255, .6) 0%, rgba(255, 211, 224, .5) 55%, rgba(255, 228, 238, .7) 100%),
-      radial-gradient(ellipse at center, transparent 35%, rgba(185, 163, 242, .3) 100%);
+      radial-gradient(ellipse at 50% 48%, rgba(38, 14, 40, .38) 0%, rgba(38, 14, 40, .52) 55%, rgba(24, 8, 26, .72) 100%),
+      linear-gradient(180deg, rgba(24, 8, 26, .25) 0%, transparent 35%, transparent 65%, rgba(24, 8, 26, .3) 100%);
   }
   .sparkle {
     position: absolute;
@@ -315,7 +362,7 @@
     pointer-events: none;
   }
   @keyframes twinkle { 0%, 100% { opacity: 0; transform: scale(.4); } 50% { opacity: 1; transform: scale(1); } }
-  @keyframes kenburns { from { transform: scale(1); } to { transform: scale(1.12) translate(-1%, -1%); } }
+  @keyframes kenburns { from { transform: scale(1); } to { transform: scale(1.04); } }
 
   .hero-content { position: relative; z-index: 2; max-width: 760px; }
   .hero-kicker {
@@ -323,9 +370,11 @@
     padding: .5em 1.3em;
     position: relative; top: calc(-1 * clamp(18px, 5vh, 44px)); /* sits a little above the title */
     border-radius: 999px;
-    background: rgba(255, 255, 255, .55);
-    border: 1px solid rgba(185, 163, 242, .7);
+    background: rgba(30, 10, 32, .38);
+    border: 1px solid rgba(255, 227, 138, .55);
     backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    color: #FFF4E2;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, .35);
     font-size: clamp(1rem, 2.2vw, 1.2rem); letter-spacing: .18em; text-transform: uppercase; font-weight: 500;
   }
   .hero-title {
@@ -334,9 +383,9 @@
     font-size: clamp(2rem, 5.4vw, 3.6rem);
     letter-spacing: .03em;
     line-height: 1.2;
-    color: var(--ink);
+    color: #FFF8EE;
     margin: .5em 0 .35em;
-    text-shadow: 0 1px 16px rgba(255, 255, 255, .85);
+    text-shadow: 0 2px 4px rgba(20, 6, 22, .45), 0 4px 24px rgba(20, 6, 22, .55);
   }
   .hero-title span {
     display: block;
@@ -346,85 +395,67 @@
     letter-spacing: 0;
     line-height: 1.15;
     margin-top: .05em;
-    background: linear-gradient(90deg, var(--terra), var(--orange), var(--gold-2));
+    background: linear-gradient(90deg, #FFD9A0, #FFE9B0 50%, #FFC6D3);
     -webkit-background-clip: text; background-clip: text; color: transparent;
     text-shadow: none;
+    filter: drop-shadow(0 2px 10px rgba(20, 6, 22, .6));
     padding: 0 .1em;
   }
-  .hero-sub { font-size: clamp(1rem, 2.4vw, 1.2rem); color: var(--ink-soft); margin: 0 auto; max-width: 520px; }
+  .hero-sub { font-size: clamp(1rem, 2.4vw, 1.2rem); color: rgba(255, 244, 230, .94); text-shadow: 0 1px 12px rgba(20, 6, 22, .7); margin: 0 auto; max-width: 520px; }
   .scroll-cue {
     display: inline-flex; flex-direction: column; align-items: center; gap: 6px;
     margin-top: 44px;
-    color: var(--ink); text-decoration: none; font-size: .8rem; letter-spacing: .2em; text-transform: uppercase;
+    color: #FFF4E2; text-decoration: none; font-size: .8rem; letter-spacing: .2em; text-transform: uppercase;
+    text-shadow: 0 1px 8px rgba(20, 6, 22, .6);
   }
   .scroll-cue i {
-    width: 26px; height: 42px; border: 2px solid var(--ink); border-radius: 14px; position: relative;
+    width: 26px; height: 42px; border: 2px solid #FFF4E2; border-radius: 14px; position: relative;
   }
   .scroll-cue i::after {
     content: ''; position: absolute; left: 50%; top: 8px; width: 4px; height: 8px; margin-left: -2px;
-    border-radius: 2px; background: var(--terra);
+    border-radius: 2px; background: var(--gold);
     animation: wheel 1.6s ease-in-out infinite;
   }
   @keyframes wheel { 0% { opacity: 0; transform: translateY(0); } 40% { opacity: 1; } 100% { opacity: 0; transform: translateY(14px); } }
 
-  /* ---------- Story timeline ---------- */
+  /* ---------- Story: three polaroid frames ---------- */
   #story {
-    padding: clamp(70px, 10vw, 120px) 0;
+    padding: clamp(60px, 8vw, 100px) 0;
     background:
       radial-gradient(circle at 10% 10%, rgba(241, 232, 255, .9), transparent 40%),
       radial-gradient(circle at 90% 60%, rgba(255, 227, 138, .25), transparent 45%),
       transparent;
   }
-  .timeline { position: relative; display: flex; flex-direction: column; gap: clamp(36px, 6vw, 56px); }
-  .timeline::before {
-    content: ''; position: absolute; top: 0; bottom: 0; left: 50%;
-    width: 3px; margin-left: -1.5px;
-    background: linear-gradient(var(--lav-3), var(--orange), var(--gold));
-    border-radius: 3px; opacity: .7;
+  .frames {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: clamp(18px, 3.4vw, 40px);
+    max-width: 900px; margin: 0 auto;
   }
-  .memory {
-    position: relative;
-    width: calc(50% - 44px);
-    border-radius: 24px;
-    background: rgba(255, 255, 255, .55);
-    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-    border: 1.5px solid rgba(185, 163, 242, .65);
+  .frame {
+    margin: 0; padding: 10px 10px 14px;
+    background: #fff; border-radius: 6px;
     box-shadow: var(--shadow-warm);
-    cursor: pointer;
-    transition: transform .4s ease, box-shadow .4s ease, opacity .9s ease;
+    transform: rotate(var(--tilt, 0deg));
+    transition: transform .35s ease, box-shadow .35s ease;
+    cursor: zoom-in;
   }
-  .memory:nth-child(even) { margin-left: auto; }
-  .memory:hover, .memory:focus-visible { transform: translateY(-6px) rotate(-.4deg); box-shadow: 0 26px 50px -18px rgba(199, 42, 94, .55), 0 0 0 4px rgba(185, 163, 242, .35); outline: none; }
-  .memory::after {
-    content: attr(data-emoji);
-    position: absolute; top: 34px;
-    right: -66px;
-    width: 44px; height: 44px; border-radius: 50%;
-    display: grid; place-items: center; font-size: 1.2rem;
-    background: var(--cream);
-    border: 3px solid var(--lav-3);
-    box-shadow: 0 0 0 6px rgba(255, 227, 138, .3);
+  .frame:nth-child(1) { --tilt: -3deg; }
+  .frame:nth-child(2) { --tilt: 2deg; }
+  .frame:nth-child(3) { --tilt: -2.5deg; }
+  .frame:hover, .frame:focus-visible {
+    transform: rotate(0deg) translateY(-8px) scale(1.03);
+    box-shadow: 0 26px 50px -18px rgba(199, 42, 94, .5), 0 0 0 3px rgba(255, 227, 138, .7);
+    outline: none;
   }
-  .memory:nth-child(even)::after { right: auto; left: -66px; }
-  .memory .photo { aspect-ratio: 4 / 3; border-radius: 22px 22px 0 0; }
-  .memory .photo::after {
-    content: ''; position: absolute; inset: 0;
-    background: linear-gradient(180deg, rgba(255, 143, 184, .08), rgba(199, 42, 94, .22));
-    mix-blend-mode: multiply;
+  .frame .photo { aspect-ratio: 4 / 5; border-radius: 3px; }
+  .frame figcaption { text-align: center; padding-top: 10px; }
+  .frame b { display: block; font-family: var(--font-script); font-size: 1.75rem; font-weight: 400; line-height: 1.1; color: var(--terra); }
+  .frame span { font-size: .88rem; color: var(--ink-soft); }
+  .story-next {
+    text-align: center; margin: clamp(30px, 4vw, 44px) auto 0;
+    font-family: var(--font-serif); font-style: italic;
+    font-size: clamp(1.05rem, 2.4vw, 1.3rem); color: var(--ink);
   }
-  .memory-body { padding: 22px 24px 24px; }
-  .memory-tag { font-size: .72rem; letter-spacing: .2em; text-transform: uppercase; color: var(--terra); font-weight: 600; }
-  .memory h3 { font-family: var(--font-serif); font-size: 1.55rem; margin: .2em 0 .35em; }
-  .memory p { margin: 0; color: var(--ink-soft); }
-  .memory-more {
-    display: grid; grid-template-rows: 0fr;
-    transition: grid-template-rows .5s ease;
-  }
-  .memory-more > div { overflow: hidden; }
-  .memory-more p { padding-top: 12px; font-style: italic; color: var(--ink); }
-  .memory.open .memory-more { grid-template-rows: 1fr; }
-  .memory-toggle { margin-top: 14px; font-size: .8rem; color: var(--terra); font-weight: 600; }
-  .memory.open .memory-toggle .closed, .memory:not(.open) .memory-toggle .opened { display: none; }
 
   /* ---------- Scratch notes ---------- */
   #notes {
@@ -775,7 +806,7 @@
   .countdown.small .cd-unit { min-width: 58px; padding: 10px 4px 8px; }
   .countdown.small .cd-unit b { font-size: 1.5rem; }
 
-  .showcase { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .showcase { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
   .tile {
     padding: 0; aspect-ratio: 1; border-radius: 18px; overflow: hidden;
     border: 4px solid #fff; background: none;
@@ -795,6 +826,16 @@
   .tile.placeholder:hover { transform: none; }
 
   .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+  .her-photos { display: grid; grid-template-columns: repeat(3, minmax(0, 220px)); justify-content: center; gap: 22px; margin: 0 0 28px; }
+  .her-photo { margin: 0; text-align: center; }
+  .her-photo .tile { width: 100%; aspect-ratio: 4 / 5; }
+  .her-photo:nth-child(odd) .tile { transform: rotate(-2deg); }
+  .her-photo:nth-child(even) .tile { transform: rotate(2deg) translateY(8px); }
+  .her-photo figcaption { margin-top: 12px; font-family: var(--font-elegant); font-style: italic; color: var(--ink-soft); }
+  @media (max-width: 560px) { .her-photos { gap: 10px; } .her-photo figcaption { font-size: .8rem; } }
+  .cards-3 { grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: 900px) { .cards-3 { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .cards-3 { grid-template-columns: 1fr; } }
   .feature-card { padding: 26px 24px; transition: transform .4s ease, box-shadow .4s ease; }
   .feature-card:hover { transform: translateY(-6px) rotate(-.5deg); box-shadow: 0 26px 46px -18px rgba(199, 42, 94, .55); }
   .fc-icon {
@@ -825,24 +866,6 @@
   .quote blockquote { margin: 0; font-family: var(--font-script); font-size: clamp(2rem, 6vw, 3.2rem); line-height: 1.25; color: var(--gold); }
   .quote cite { display: block; margin-top: 14px; font-style: normal; letter-spacing: .2em; text-transform: uppercase; font-size: .8rem; }
 
-  .promises { padding: clamp(20px, 4vw, 34px); margin-top: clamp(30px, 5vw, 48px); }
-  .promise-count { font-size: .85rem; color: var(--ink-soft); }
-  .promise-progress { height: 8px; border-radius: 8px; background: var(--lav-1); overflow: hidden; margin: 6px 0 18px; }
-  .promise-progress i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--lav-3), var(--orange), var(--gold)); transition: width .5s ease; }
-  .promise { position: relative; display: flex; align-items: flex-start; gap: 14px; padding: 12px 14px; border-radius: 14px; cursor: pointer; transition: background .3s ease; }
-  .promise:hover { background: rgba(241, 232, 255, .55); }
-  .promise input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-  .promise .box {
-    flex: 0 0 26px; height: 26px; border-radius: 8px;
-    border: 2px solid var(--lav-3); background: #fff;
-    display: grid; place-items: center; font-size: .9rem; font-weight: 700;
-    color: transparent;
-    transition: all .3s ease;
-  }
-  .promise input:checked + .box { background: linear-gradient(135deg, var(--gold), var(--orange)); border-color: transparent; color: #5A1E3C; transform: scale(1.1); }
-  .promise input:focus-visible + .box { outline: 2px solid var(--terra); outline-offset: 2px; }
-  .promise input:checked ~ span:last-child { color: var(--ink); font-weight: 500; }
-  .promise-done { text-align: center; font-family: var(--font-script); font-size: 1.9rem; color: var(--terra); min-height: 1.4em; margin: 10px 0 0; }
 
   /* ---------- Wedding invite ---------- */
   #invite {
@@ -1139,6 +1162,7 @@
     .tabs { top: 8px; }
     .tab { padding: 9px 13px; font-size: .82rem; }
     .showcase { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .showcase .tile.placeholder { grid-column: 1 / -1; aspect-ratio: auto; min-height: 72px; }
     .sd-grid { grid-template-columns: 1fr; }
     .event-head small { display: none; }
     .event-body p { padding-left: 16px; }
@@ -1177,15 +1201,15 @@
 
   /* ---------- Responsive ---------- */
   @media (max-width: 768px) {
-    .timeline::before { left: 20px; }
-    .memory, .memory:nth-child(even) { width: auto; margin-left: 52px; }
-    .memory::after, .memory:nth-child(even)::after { left: -53px; right: auto; width: 38px; height: 38px; font-size: 1rem; top: 24px; }
-    .memory .photo { aspect-ratio: 16 / 11; }
+    .frames { gap: 14px; }
+    .frame b { font-size: 1.4rem; }
+    .frame span { font-size: .8rem; }
   }
   @media (max-width: 480px) {
     .hero-kicker { font-size: .9rem; letter-spacing: .12em; padding: .5em 1.1em; }
-    .memory-body { padding: 18px 18px 20px; }
-    .memory h3 { font-size: 1.35rem; }
+    .frames { grid-template-columns: 1fr; max-width: 290px; gap: 26px; }
+    .frame b { font-size: 1.7rem; }
+    .frame span { font-size: .9rem; }
     .btn-yes { padding: 16px 38px; font-size: 1.1rem; }
     .modal { padding: 64px 20px 24px; }
     .modal .photo { width: 120px; height: 120px; margin-left: -60px; top: -60px; }
@@ -1239,6 +1263,7 @@
     <!-- Phase 2: hero -->
     <section id="hero">
       <div class="hero-bg" id="heroBg"></div>
+      <div class="hero-photo" id="heroPhoto" aria-hidden="true"></div>
       <div class="hero-overlay"></div>
       <div id="sparkles" aria-hidden="true"></div>
       <div class="hero-content">
@@ -1253,10 +1278,11 @@
     <section id="story">
       <div class="container">
         <div class="section-head reveal">
-          <span class="eyebrow">Our chapters</span>
+          <span class="eyebrow">Our story in frames</span>
           <h2 class="section-title">The story <em>so far</em></h2>
         </div>
-        <div class="timeline" id="timeline"></div>
+        <div class="frames reveal" id="timeline"></div>
+        <p class="story-next reveal">Every chapter led here — keep scrolling, my love 💛</p>
       </div>
     </section>
 
@@ -1264,7 +1290,7 @@
       <div class="container">
         <div class="section-head reveal">
           <span class="eyebrow">Just for laughs</span>
-          <h2 class="section-title">5 Funny Reasons I'm <em>Perfect for You</em></h2>
+          <h2 class="section-title">5 Reasons I'm <em>Perfect for You</em></h2>
         </div>
         <p class="reasons-hint reveal">Hover or tap a card to flip it ✨</p>
 
@@ -1273,7 +1299,7 @@
           <button class="reason reveal" type="button" aria-pressed="false">
             <span class="reason-inner">
               <span class="reason-face reason-back" aria-hidden="true">
-                <span class="rb-num">1</span><span class="rb-emoji">😴</span><span class="rb-hint">Flip me</span>
+                <span class="rb-num">1</span><span class="rb-emoji">⏰</span><span class="rb-hint">Flip me</span>
               </span>
               <span class="reason-face reason-front">
                 <span class="reason-art">
@@ -1298,7 +1324,7 @@
                     </g>
                   </svg>
                 </span>
-                <span class="reason-text"><b>1.</b> You can literally sleep anywhere (and I mean anywhere).</span>
+                <span class="reason-text"><b>1.</b> Early bird, meet night owl — I’m your free 6 AM alarm. No snooze button, no refunds. ☀️⏰</span>
               </span>
             </span>
           </button>
@@ -1333,7 +1359,7 @@
                     <text x="22" y="40" font-family="Playfair Display, Georgia, serif" font-style="italic" font-weight="700" font-size="18" fill="#C72A5E" transform="rotate(-10 40 34)">mine!</text>
                   </svg>
                 </span>
-                <span class="reason-text"><b>2.</b> You fight for the last slice like a professional athlete.</span>
+                <span class="reason-text"><b>2.</b> You’re a proud bhukkad, I’m the cook — your plate will never be empty (and always matki-free).</span>
               </span>
             </span>
           </button>
@@ -1371,7 +1397,7 @@
                     </g>
                   </svg>
                 </span>
-                <span class="reason-text"><b>3.</b> Your karaoke performances are legendary (in our living room).</span>
+                <span class="reason-text"><b>3.</b> One day I’ll beat you at antakshari and show you what real expertise looks like. (A man can dream! 🎤)</span>
               </span>
             </span>
           </button>
@@ -1380,7 +1406,7 @@
           <button class="reason reveal" type="button" aria-pressed="false" style="--d:.3s">
             <span class="reason-inner">
               <span class="reason-face reason-back" aria-hidden="true">
-                <span class="rb-num">4</span><span class="rb-emoji">💃</span><span class="rb-hint">Flip me</span>
+                <span class="rb-num">4</span><span class="rb-emoji">😂</span><span class="rb-hint">Flip me</span>
               </span>
               <span class="reason-face reason-front">
                 <span class="reason-art">
@@ -1411,7 +1437,7 @@
                     <g fill="#FFD24D"><path d="M30 80 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3z"/><path d="M170 100 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2z"/></g>
                   </svg>
                 </span>
-                <span class="reason-text"><b>4.</b> You dance like no one is watching (even when I am).</span>
+                <span class="reason-text"><b>4.</b> Your PJs are terrible, mine are worse — so you’ll always have someone laughing at yours.</span>
               </span>
             </span>
           </button>
@@ -1452,7 +1478,7 @@
                     <g fill="#C72A5E" font-size="14" font-family="Georgia, serif"><text x="176" y="92">♥</text><text x="108" y="36">♥</text></g>
                   </svg>
                 </span>
-                <span class="reason-text"><b>5.</b> You capture every single moment, even the bad ones.</span>
+                <span class="reason-text"><b>5.</b> You plan every trip, I bring the plot twists — and I’ll click 100 photos till you love one. 📸</span>
               </span>
             </span>
           </button>
@@ -1463,14 +1489,14 @@
     <section id="notes">
       <div class="container">
         <div class="section-head reveal">
-          <span class="eyebrow">Before the last chapter</span>
-          <h2 class="section-title">Three <em>secret notes</em></h2>
+          <span class="eyebrow">Before the new beginnings</span>
+          <h2 class="section-title">Secret <em>notes</em></h2>
         </div>
         <p class="notes-hint reveal">Scratch each card with your finger or mouse to uncover a little secret from me 💌</p>
         <div class="scratch-grid" id="scratchGrid"></div>
         <div class="notes-status reveal">
           <div class="notes-progress" id="notesProgress" aria-hidden="true"><span>💛</span><span>💜</span><span>🧡</span></div>
-          <p class="notes-lock" id="notesLock" aria-live="polite">🔒 Reveal all three notes to unlock the last chapter</p>
+          <p class="notes-lock" id="notesLock" aria-live="polite">🔒 Reveal all the notes to unlock our new beginning</p>
           <button class="btn-yes" id="unlockBtn" type="button" hidden>One last thing… ↓</button>
         </div>
       </div>
@@ -1510,7 +1536,8 @@
         <div class="panel" role="tabpanel" id="panel-her" aria-labelledby="tab-her">
           <h3 class="panel-title">The Queen of My Heart</h3>
           <p class="panel-sub">A few of the million reasons Srishti is my favourite person.</p>
-          <div class="block cards" id="herCards"></div>
+          <div class="her-photos" id="herPhotos"></div>
+          <div class="block cards cards-3" id="herCards"></div>
           <figure class="quote">
             <blockquote id="herQuote"></blockquote>
             <figcaption><cite>— Vivek</cite></figcaption>
@@ -1520,14 +1547,7 @@
         <div class="panel" role="tabpanel" id="panel-him" aria-labelledby="tab-him" hidden>
           <h3 class="panel-title">The Lucky Guy</h3>
           <p class="panel-sub">A little about Vivek, and why he and Srishti fit together.</p>
-          <div class="cards" id="himCards"></div>
-          <div class="glass promises">
-            <h4 class="block-title">📜 His Promises to Srishti</h4>
-            <div class="promise-count" id="promiseCount"></div>
-            <div class="promise-progress"><i id="promiseBar"></i></div>
-            <div id="promiseList"></div>
-            <p class="promise-done" id="promiseDone" aria-live="polite"></p>
-          </div>
+          <div class="cards cards-3" id="himCards"></div>
         </div>
 
         <section class="memory-lane" aria-labelledby="memoryLaneTitle">
@@ -1569,12 +1589,13 @@
   </div>
 
   <div id="cutu" role="dialog" aria-modal="true" aria-labelledby="cutuTitle">
+    <div class="cutu-bg" id="cutuBg" aria-hidden="true"></div>
     <span class="orb a" aria-hidden="true"></span>
     <span class="orb b" aria-hidden="true"></span>
     <span class="orb c" aria-hidden="true"></span>
     <div class="cutu-inner">
       <h2 class="cutu-text script-glow" id="cutuTitle">Hey ! Cutu 💕</h2>
-      <p class="cutu-sub">You just said yes to forever. Our home is now open, just for us.</p>
+      <p class="cutu-sub">One little ‘yes’, a lifetime of us. Every chapter from here, we write together.</p>
     </div>
     <div class="cutu-cta" aria-live="polite">
       <p class="cutu-tease" data-tease="1">Ready for the big reveal? ✨</p>
@@ -1683,44 +1704,28 @@
 <script>
   // Edit these to personalise — paths are relative to index.html.
   const PHOTOS = {
-    hero: 'images/hero.jpg',
-    proposal: 'images/proposal.jpg',
-    celebration: 'images/celebration.jpg'
+    hero: 'high-res-images/IMG-20260209-WA0175_Original.jpeg', // full-quality original (backgrounds stay high-res)
+    cutu: 'high-res-images/2.jpg', // backdrop of the "Hey ! Cutu" screen after she says yes
+    celebration: 'high-res-images/1.jpg'
   };
 
   const MEMORIES = [
-    {
-      tag: 'Where it all began', title: 'The First Chapter', emoji: '📖', img: 'images/memory-1.jpg',
-      text: 'The day our paths crossed, something quietly clicked — like the first line of a story I already knew I would love.',
-      more: 'I still remember exactly how you smiled. I think a part of me knew right then.'
-    },
-    {
-      tag: 'Side by side', title: 'Favourite Adventures', emoji: '🗺️', img: 'images/memory-2.jpg',
-      text: 'New places, wrong turns, late-night snacks and endless laughter — every adventure is better because you\'re in it.',
-      more: 'Getting lost is my favourite thing to do, as long as it\'s with you.'
-    },
-    {
-      tag: 'In between', title: 'Little Moments', emoji: '☕', img: 'images/memory-3.jpg',
-      text: 'The silly texts, the shared playlists, the quiet coffees. The small things that turned out to be everything.',
-      more: 'Those ordinary days with you are my most extraordinary memories.'
-    },
-    {
-      tag: 'What comes next', title: 'Forever Begins', emoji: '💍', img: 'images/memory-4.jpg',
-      text: 'Every chapter so far has led me here — to you, to this page, and to one very important question…',
-      more: 'Keep scrolling, my love. 💛'
-    }
+    { title: 'Sarafa magic', line: 'Our first little tour!', emoji: '📖', img: 'images/9.jpg' },
+    { title: 'Foodie dates', line: 'The bhukkad & her chef 🍕', emoji: '🍕', img: 'high-res-images/1.jpg' },
+    { title: 'Chai gupshup', line: 'Late-night chai & baatein ☕', emoji: '☕', img: 'images/36.jpg' }
   ];
 
+  // Memory Lane: [file in images/, caption, optional crop focus] — high-res photos only (web JPEG copies).
+  // No photo used elsewhere on the site, and no near-duplicates (same outfit/moment).
+  // 14 photos + the "coming soon" tile = 3 rows of 5 on desktop; 7 rows of 2 on phones, then the tile full-width.
   const GALLERY = [
-    { img: 'images/hero.jpg', caption: 'Us 💜' },
-    { img: 'images/memory-1.jpg', caption: 'The beginning' },
-    { img: 'images/memory-2.jpg', caption: 'Adventures' },
-    { img: 'images/memory-3.jpg', caption: 'Little moments' },
-    { img: 'images/memory-4.jpg', caption: 'My favourite' },
-    { img: 'images/proposal.jpg', caption: 'You & me' },
-    { img: 'images/celebration.jpg', caption: 'Forever' }
-  ];
-  // GALLERY + the "coming soon" tile fill exactly two rows of 4 (four rows of 2 on phones).
+    ['IMG_6272.jpg', 'Ghats of Banaras'], ['IMG_20251104_211024.jpg', 'Snow-capped smiles', 'center 72%'],
+    ['IMG_6275.jpg', 'Jumping for joy'], ['IMG_6291.jpg', 'Born to ride'], ['IMG_6282.jpg', 'Waves & sea breeze'],
+    ['IMG_6297.jpg', 'Boat ride with the seagulls'], ['IMG_6292.jpg', 'Riverside calm'], ['IMG_6299.jpg', 'Blushing in black'],
+    ['IMG-20241007-WA0000.jpg', 'Nature’s child'], ['IMG_6278.jpg', 'By the waterfall'],
+    ['IMG_6279.jpg', 'Party mode on'], ['IMG-20250619-WA0016.jpg', 'Lakeside wanderer'], ['IMG_6300.jpg', 'Splashing in the waves'],
+    ['IMG-20250628-WA0003.jpg', 'Laughing it off']
+  ].map(([file, caption, pos]) => ({ img: `images/${file}`, caption, pos })); // pos: optional crop focus for the square tile
 
   const MUSIC = {
     intro: 'music/love-mashup.mp3',
@@ -1742,28 +1747,24 @@
   const RSVP_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz3cJNH3ZG_7hOmVUoL5SS5WHwh7X5dC1g34ytXC7Q2mEBLwHD6UbR3r7QbMrywOJhV/exec';
 
   const HER_CARDS = [
-    { icon: '🌟', title: 'Her Best Qualities', items: ['The kindest heart I know', 'Brave, curious and endlessly patient', 'Makes everyone feel at home'] },
-    { icon: '💐', title: 'Her Favourite Things', items: ['Her favourite food goes here', 'The song she plays on repeat', 'Cosy autumn evenings and chai'] },
-    { icon: '🙈', title: 'Her Quirky Habits', items: ['Laughs at her own jokes first', 'Steals my hoodies, never returns them', 'Names every plant she owns'] },
-    { icon: '💜', title: 'Why Vivek Loves Her', items: ['She makes ordinary days magical', 'She believes in me, even when I don’t', 'She is simply, completely herself'] }
+    { icon: '🌟', title: 'Her Beautiful Heart', items: ['Kind to the core, brave to the bone', 'Always there for her loved ones — rain or shine 🤗', 'Full of life, yet humble and grounded ☀️'] },
+    { icon: '🚀', title: 'The Go-Getter', items: ['Challenge? Accepted. Every single time 💪', 'Hard-working, ambitious, unstoppable', 'Chief Planner — even her plans have plans 📋'] },
+    { icon: '😋', title: 'Bhukkad & Chatori', items: ['Looks lean, eats like a champion 🍽️', 'Goku’s corn cheese momos = pure happiness', 'Red velvet? Yes please. Matki? No thank you 🙅‍♀️'] },
+    { icon: '☕', title: 'Chai & Kitchen Magic', items: ['Chai isn’t a drink, it’s an emotion', 'Makes the best chai in town — no debate', 'Her poha deserves its own fan club'] },
+    { icon: '🎶', title: 'The Melody Queen', items: ['Antakshari pro — knows every song since Alam Ara 🎤', 'Our playlists? Basically twins', 'Her voice and her laugh are my favourite songs'] },
+    { icon: '🙈', title: 'Her Fun Side', items: ['Cracks the worst PJs — a perfect match for mine 😄', 'Always ready to pack her bags for the next trip ✈️', 'Manku 🐒, her soft toy, is my rival for her love 👀 Beware Manku, I’m coming!'] }
+  ];
+  const HER_PHOTOS = [
+    { img: 'images/IMG_6280.jpg', caption: 'Grace in a saree' },
+    { img: 'images/IMG_6277.jpg', caption: 'Little Srishti 🚲' },
+    { img: 'images/IMG-20260310-WA0018.jpg', caption: 'That smile 💛' }
   ];
   const HER_QUOTE = 'Her smile lights up my world.';
 
   const HIM_CARDS = [
-    { icon: '🤵', title: 'About Vivek', items: ['Writes code, but writes love letters better', 'Professional snack sharer', 'Srishti’s biggest fan, always'] },
-    { icon: '🤝', title: 'His Promise', text: 'To choose her every single day, to listen, to grow, and to make her laugh until the very end.' },
-    { icon: '🧩', title: 'Why They’re a Perfect Match', items: ['She’s the calm to his chaos', 'Same silly sense of humour', 'Two halves of one happy story'] }
-  ];
-
-  const PROMISES = [
-    'I promise to always make you laugh, even on the hard days',
-    'I promise to share the last bite (most of the time)',
-    'I promise to listen, really listen',
-    'I promise to hold your hand through every storm',
-    'I promise to plan surprise dates, forever',
-    'I promise to be your biggest cheerleader',
-    'I promise to say sorry first',
-    'I promise to love you more with every autumn'
+    { icon: '🌀', title: 'Mr. Spontaneous', items: ['Impromptu, unplanned and proud of it ⚡', 'The exact opposite of Srishti, the Chief Planner 📋', 'Life’s a road trip — he finds the route on the way 🗺️'] },
+    { icon: '🌿', title: 'His Happy Places', items: ['Out in nature — his favourite escape 🏞️', 'The kitchen — cooking is his solace 🍳', 'The bathroom — where the real concerts happen 🚿🎤'] },
+    { icon: '🧩', title: 'Why They’re a Perfect Match', items: ['She brings the stability to his spontaneity ⚖️', 'Same silly PJs, same playlists 😄', 'The fire-and-ice duo — she brings the fire, he keeps it cool 🔥❄️'] }
   ];
 
   // All events are at WEDDING.venue unless an event sets its own `venue`.
@@ -1790,12 +1791,19 @@
   const $ = (sel) => document.querySelector(sel);
 
   /* ---------- Audio ---------- */
+  // Track changes are a gentle crossfade: the old song eases out while the new one eases in a
+  // moment later, both on an S-curve so neither starts or stops abruptly. Volume runs through
+  // Web Audio gain nodes because iPhones ignore <audio>.volume (fades would be instant there);
+  // browsers without Web Audio fall back to animating .volume.
   const audio = {
     tracks: {},
     current: null,
     volume: 0.7,
-    fadeMs: 1500,
+    fadeOutMs: 2600,
+    fadeInMs: 3200,
+    fadeInDelayMs: 700, // let the old track dip first so the two songs don't clash
     muted: localStorage.getItem('svf-muted') === '1',
+    ctx: null,
 
     init() {
       for (const [key, src] of Object.entries(MUSIC)) {
@@ -1808,35 +1816,89 @@
         a.src = src;
         this.tracks[key] = a;
       }
+      this.initGraph();
+      // Browsers start audio contexts suspended until the first tap/keypress.
+      const unlock = () => { if (this.ctx && this.ctx.state !== 'running') this.ctx.resume().catch(() => {}); };
+      ['pointerdown', 'keydown', 'touchend'].forEach((t) => document.addEventListener(t, unlock, { passive: true }));
+    },
+
+    initGraph() {
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      // Opened straight from disk, Chrome treats the mp3s as cross-origin and Web Audio would play silence.
+      if (!Ctx || location.protocol === 'file:') return;
+      try {
+        // Keep playing when an iPhone's silent switch is on, like a plain <audio> element would.
+        if (navigator.audioSession) navigator.audioSession.type = 'playback';
+        const ctx = new Ctx();
+        // Master gain handles mute, since not every browser silences a muted element routed through Web Audio.
+        this.master = ctx.createGain();
+        this.master.gain.value = this.muted ? 0 : 1;
+        this.master.connect(ctx.destination);
+        for (const a of Object.values(this.tracks)) {
+          const gain = ctx.createGain();
+          gain.gain.value = 0;
+          ctx.createMediaElementSource(a).connect(gain).connect(this.master);
+          a.volume = 1; // the gain node controls loudness from here on
+          a._gain = gain.gain;
+        }
+        this.ctx = ctx;
+      } catch (err) {
+        console.warn('Web Audio unavailable, using element volume for fades', err);
+        this.ctx = null;
+        this.master = null;
+        for (const a of Object.values(this.tracks)) { a._gain = null; a.volume = 0; }
+      }
+    },
+
+    // Smooth S-curve from `from` to `to`, sampled for setValueCurveAtTime.
+    curve(from, to) {
+      const n = 64;
+      const c = new Float32Array(n);
+      for (let i = 0; i < n; i++) c[i] = from + (to - from) * (1 - Math.cos((Math.PI * i) / (n - 1))) / 2;
+      return c;
+    },
+
+    level(a) {
+      return a._gain ? a._gain.value : a.volume;
     },
 
     crossfadeTo(key) {
+      if (this.ctx && this.ctx.state !== 'running') this.ctx.resume().catch(() => {});
       if (this.current === key) {
         const cur = this.tracks[key];
         // Retry if an earlier autoplay attempt was blocked by the browser.
         if (cur && !cur.dataset.broken) {
           // Resume if paused (blocked autoplay or the back button), and cancel any fade-out in progress.
           if (cur.paused) cur.play().catch(() => {});
-          this.fade(cur, this.volume);
+          this.fade(cur, this.volume, this.fadeInMs);
         }
         return;
       }
       const prev = this.current && this.tracks[this.current];
       const next = this.tracks[key];
       this.current = key;
-      if (prev) this.fade(prev, 0, () => prev.pause());
+      if (prev) this.fade(prev, 0, this.fadeOutMs, () => prev.pause());
       if (!next || next.dataset.broken) return;
       next.play().catch(() => {});
-      this.fade(next, this.volume);
+      this.fade(next, this.volume, this.fadeInMs, null, prev && !prev.paused ? this.fadeInDelayMs : 0);
     },
 
-    fade(a, to, done) {
+    fade(a, to, ms, done, delayMs = 0) {
+      clearTimeout(a._fadeDone);
       cancelAnimationFrame(a._fade);
-      const from = a.volume;
-      const start = performance.now();
+      const from = this.level(a);
+      if (a._gain) {
+        const t0 = this.ctx.currentTime;
+        a._gain.cancelScheduledValues(t0);
+        a._gain.setValueAtTime(from, t0);
+        if (Math.abs(to - from) > 0.001) a._gain.setValueCurveAtTime(this.curve(from, to), t0 + delayMs / 1000, ms / 1000);
+        if (done) a._fadeDone = setTimeout(done, delayMs + ms + 50);
+        return;
+      }
+      const start = performance.now() + delayMs;
       const step = (now) => {
-        const t = Math.min(1, (now - start) / this.fadeMs);
-        try { a.volume = from + (to - from) * t; } catch (_) {}
+        const t = Math.max(0, Math.min(1, (now - start) / ms));
+        try { a.volume = from + (to - from) * (1 - Math.cos(Math.PI * t)) / 2; } catch (_) {}
         if (t < 1) a._fade = requestAnimationFrame(step);
         else if (done) done();
       };
@@ -1846,7 +1908,7 @@
     // Fade everything out but remember the current track, so crossfadeTo() resumes it.
     silence() {
       Object.values(this.tracks).forEach((a) => {
-        if (!a.paused) this.fade(a, 0, () => a.pause());
+        if (!a.paused) this.fade(a, 0, this.fadeOutMs, () => a.pause());
       });
     },
 
@@ -1854,6 +1916,7 @@
       this.muted = !this.muted;
       localStorage.setItem('svf-muted', this.muted ? '1' : '0');
       Object.values(this.tracks).forEach((a) => { a.muted = this.muted; });
+      if (this.master) this.master.gain.setTargetAtTime(this.muted ? 0 : 1, this.ctx.currentTime, 0.05);
       const cur = this.current && this.tracks[this.current];
       if (!this.muted && cur && cur.paused && !cur.dataset.broken) cur.play().catch(() => {});
       renderMute();
@@ -1891,56 +1954,31 @@
 
   function buildTimeline() {
     const root = $('#timeline');
-    MEMORIES.forEach((m, i) => {
-      const card = document.createElement('article');
-      card.className = 'memory reveal';
-      card.tabIndex = 0;
-      card.dataset.emoji = m.emoji;
-      card.setAttribute('role', 'button');
-      card.setAttribute('aria-expanded', 'false');
-
-      card.appendChild(makePhoto(m.img, m.title, m.emoji));
-
-      const body = document.createElement('div');
-      body.className = 'memory-body';
-      const tag = document.createElement('span');
-      tag.className = 'memory-tag';
-      tag.textContent = `0${i + 1} · ${m.tag}`;
-      const h3 = document.createElement('h3');
-      h3.textContent = m.title;
-      const p = document.createElement('p');
-      p.textContent = m.text;
-      const more = document.createElement('div');
-      more.className = 'memory-more';
-      const moreInner = document.createElement('div');
-      const moreP = document.createElement('p');
-      moreP.textContent = m.more;
-      moreInner.appendChild(moreP);
-      more.appendChild(moreInner);
-      const toggle = document.createElement('div');
-      toggle.className = 'memory-toggle';
-      toggle.innerHTML = '<span class="closed">Tap to read more ♡</span><span class="opened">Close ♡</span>';
-
-      body.append(tag, h3, p, more, toggle);
-      card.appendChild(body);
-
-      const flip = () => {
-        const open = card.classList.toggle('open');
-        card.setAttribute('aria-expanded', String(open));
-      };
-      card.addEventListener('click', flip);
-      card.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flip(); }
+    MEMORIES.forEach((m) => {
+      const fig = document.createElement('figure');
+      fig.className = 'frame';
+      fig.tabIndex = 0;
+      fig.setAttribute('role', 'button');
+      fig.setAttribute('aria-label', `${m.title} — ${m.line}`);
+      fig.appendChild(makePhoto(m.img, m.title, m.emoji));
+      const cap = document.createElement('figcaption');
+      cap.append(el('b', '', m.title), el('span', '', m.line));
+      fig.appendChild(cap);
+      const open = () => openLightbox(m.img, m.title);
+      fig.addEventListener('click', open);
+      fig.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
       });
-      root.appendChild(card);
+      root.appendChild(fig);
     });
   }
 
+
   /* ---------- Scratch notes ---------- */
   const SCRATCH_NOTES = [
-    { title: 'Our first photo', img: 'images/memory-1.jpg', emoji: '📷', note: 'The day I realised my favourite view is you.' },
-    { title: 'A little secret', img: 'images/memory-2.jpg', emoji: '🤫', note: 'I practised this moment more times than I’d ever admit 🙈' },
-    { title: 'A promise', img: 'images/memory-3.jpg', emoji: '🤝', note: 'Wherever life takes us, my hand will always find yours.' }
+    { title: 'The first photo', img: 'images/IMG_6273.jpg', emoji: '📷', note: 'The first photo I ever saw of you — and all I could think was, how can someone be so beautiful? 😍' },
+    { title: 'A little secret', img: 'images/33.jpg', emoji: '🤫', note: 'I do love my nakhrili Nishu a lot! 😘' },
+    { title: 'A promise', img: 'images/37.jpg', emoji: '🤝', note: 'Wherever life takes us, my hand will always find yours.' }
   ];
   const SCRATCH_CLEAR_RATIO = 0.5;
 
@@ -2222,7 +2260,7 @@
     clearTimeout(loaderTimer);
     audio.silence();
     loader.classList.remove('opening');
-    $('#heartWrap').querySelectorAll('.burst').forEach((el) => el.remove());
+    loader.querySelectorAll('.burst, .shower').forEach((el) => el.remove());
     loader.style.display = '';
     void loader.offsetWidth; // commit display before fading back in
     loader.classList.remove('hide');
@@ -2238,26 +2276,59 @@
   }
   $('#backBtn').addEventListener('click', backToHeart);
 
-  // The heart's own petals spray outward when it opens.
+  // Whole flowers mixed into the heart burst and the shower, alongside the petals.
+  const BLOOMS = ['🌸', '🌺', '🌹', '🌷', '💮', '🌼'];
+  function flowerHTML(bloomChance) {
+    if (Math.random() < bloomChance) return `<span class="bloom">${BLOOMS[Math.floor(Math.random() * BLOOMS.length)]}</span>`;
+    const kind = pickPetal();
+    return `<span class="p ${kind}">${kind.startsWith('orchid') ? ORCHID_SVG : ''}</span>`;
+  }
+
+  // The heart's own petals and flowers spray outward when it opens, in two quick waves.
   function burstPetals() {
     const wrap = $('#heartWrap');
+    const small = window.innerWidth < 600;
+    const reach = Math.min(window.innerWidth, window.innerHeight) * 0.6;
     const frag = document.createDocumentFragment();
-    const count = window.innerWidth < 600 ? 22 : 32;
+    const wave = (count, minDist, maxDist, delay) => {
+      for (let i = 0; i < count; i++) {
+        const angle = (i / count) * Math.PI * 2 + rand(-0.3, 0.3);
+        const dist = rand(minDist, maxDist);
+        const el = document.createElement('span');
+        el.className = 'burst';
+        el.innerHTML = flowerHTML(0.35);
+        el.style.setProperty('--size', `${rand(18, 34).toFixed(1)}px`);
+        el.style.setProperty('--bx', `${(Math.cos(angle) * dist).toFixed(1)}px`);
+        el.style.setProperty('--by', `${(Math.sin(angle) * dist).toFixed(1)}px`);
+        el.style.setProperty('--br', `${rand(-360, 360).toFixed(0)}deg`);
+        el.style.setProperty('--bdur', `${rand(1.2, 1.9).toFixed(2)}s`);
+        el.style.animationDelay = `${delay}s`;
+        frag.appendChild(el);
+      }
+    };
+    wave(small ? 28 : 44, 120, reach, 0);
+    wave(small ? 18 : 28, 60, reach * 0.6, 0.18);
+    wrap.appendChild(frag);
+    showerFlowers();
+  }
+
+  // A shower of petals and blooms falling across the whole screen as the heart opens.
+  function showerFlowers() {
+    const frag = document.createDocumentFragment();
+    const count = window.innerWidth < 600 ? 34 : 60;
     for (let i = 0; i < count; i++) {
-      const kind = pickPetal();
-      const angle = (i / count) * Math.PI * 2 + rand(-0.25, 0.25);
-      const dist = rand(120, Math.min(window.innerWidth, window.innerHeight) * 0.55);
       const el = document.createElement('span');
-      el.className = 'burst';
-      el.innerHTML = `<span class="p ${kind}">${kind.startsWith('orchid') ? ORCHID_SVG : ''}</span>`;
-      el.style.setProperty('--size', `${rand(16, 30).toFixed(1)}px`);
-      el.style.setProperty('--bx', `${(Math.cos(angle) * dist).toFixed(1)}px`);
-      el.style.setProperty('--by', `${(Math.sin(angle) * dist).toFixed(1)}px`);
-      el.style.setProperty('--br', `${rand(-360, 360).toFixed(0)}deg`);
-      el.style.setProperty('--bdur', `${rand(1.1, 1.7).toFixed(2)}s`);
+      el.className = 'shower';
+      el.innerHTML = flowerHTML(0.4);
+      el.style.setProperty('--x', `${rand(-3, 100).toFixed(2)}vw`);
+      el.style.setProperty('--size', `${rand(16, 36).toFixed(1)}px`);
+      el.style.setProperty('--drift', `${rand(-14, 14).toFixed(2)}vw`);
+      el.style.setProperty('--br', `${rand(-300, 300).toFixed(0)}deg`);
+      el.style.setProperty('--fdur', `${rand(2.2, 3.6).toFixed(2)}s`);
+      el.style.setProperty('--fdelay', `${rand(0, 1).toFixed(2)}s`);
       frag.appendChild(el);
     }
-    wrap.appendChild(frag);
+    loader.appendChild(frag);
   }
 
   function openHeart() {
@@ -2448,11 +2519,28 @@
       tile.type = 'button';
       tile.setAttribute('aria-label', `Open photo: ${g.caption}`);
       const photo = makePhoto(g.img, g.caption, ['💜', '🌷', '✨', '🌸'][i % 4]);
+      const img = photo.querySelector('img');
+      if (g.pos && img) img.style.objectPosition = g.pos;
       tile.appendChild(photo);
       tile.addEventListener('click', () => { if (!photo.classList.contains('no-photo')) openLightbox(g.img, g.caption); });
       root.appendChild(tile);
     });
     root.appendChild(el('div', 'tile placeholder', 'More memories coming soon ✨'));
+  }
+
+  function buildHerPhotos() {
+    const root = $('#herPhotos');
+    HER_PHOTOS.forEach((p, i) => {
+      const fig = el('figure', 'her-photo');
+      const btn = el('button', 'tile');
+      btn.type = 'button';
+      btn.setAttribute('aria-label', `Open photo: ${p.caption}`);
+      const photo = makePhoto(p.img, p.caption, ['🌸', '🧸', '💛'][i % 3]);
+      btn.appendChild(photo);
+      btn.addEventListener('click', () => { if (!photo.classList.contains('no-photo')) openLightbox(p.img, p.caption); });
+      fig.append(btn, el('figcaption', null, p.caption));
+      root.appendChild(fig);
+    });
   }
 
   function buildCards(root, cards) {
@@ -2467,29 +2555,6 @@
       if (c.text) card.appendChild(el('p', null, c.text));
       root.appendChild(card);
     });
-  }
-
-  function buildPromises() {
-    const list = $('#promiseList');
-    const update = () => {
-      const done = list.querySelectorAll('input:checked').length;
-      $('#promiseCount').textContent = `${done} of ${PROMISES.length} promises sealed`;
-      $('#promiseBar').style.width = `${(done / PROMISES.length) * 100}%`;
-      const all = done === PROMISES.length;
-      $('#promiseDone').textContent = all ? 'Every promise, sealed with love 💛' : '';
-      return all;
-    };
-    PROMISES.forEach((text) => {
-      const label = el('label', 'promise');
-      const input = el('input');
-      input.type = 'checkbox';
-      const box = el('span', 'box', '✓');
-      box.setAttribute('aria-hidden', 'true');
-      label.append(input, box, el('span', null, text));
-      input.addEventListener('change', () => { if (update() && input.checked) miniConfetti(); });
-      list.appendChild(label);
-    });
-    update();
   }
 
   /* ---------- Wedding invite ---------- */
@@ -2741,15 +2806,16 @@
   audio.crossfadeTo('intro');
   renderMute();
   setBgPhoto($('#heroBg'), PHOTOS.hero);
-  setBgPhoto($('#proposalBg'), PHOTOS.proposal);
+  setBgPhoto($('#heroPhoto'), PHOTOS.hero);
+  setBgPhoto($('#cutuBg'), PHOTOS.cutu);
   makePhoto(PHOTOS.celebration, 'Srishti and Vivek', '💍', $('#celebratePhoto'));
   buildTimeline();
   setupScratchNotes();
   buildShowcase();
+  buildHerPhotos();
   buildCards($('#herCards'), HER_CARDS);
   buildCards($('#himCards'), HIM_CARDS);
   $('#herQuote').textContent = HER_QUOTE;
-  buildPromises();
   buildEvents();
   fillWeddingDetails();
   buildCountdowns();
