@@ -196,22 +196,41 @@
   #cutu .orb.b { width: 40vmax; height: 40vmax; right: -12vmax; bottom: -12vmax; background: rgba(255, 143, 184, .45); animation-delay: -4s; }
   #cutu .orb.c { width: 26vmax; height: 26vmax; left: 40%; top: 55%; background: rgba(255, 227, 138, .35); animation-delay: -8s; }
   @keyframes drift { to { transform: translate(6vmax, -5vmax) scale(1.15); } }
-  /* Photo backdrop, dimmed with a plum wash so the text and orbs still glow on top. */
-  .cutu-bg {
-    position: absolute; inset: -20px;
-    background-size: cover; background-position: center 30%;
-    filter: blur(3px) saturate(.95) brightness(.7);
-    transform: scale(1.04);
+  /* The whole photo (uncropped, so both of us stay in frame) sits in the centre, softly hazed,
+     and fades at its edges into the plum gradient + glow orbs of #cutu. */
+  .cutu-photo {
+    position: absolute; inset: 0;
+    background-repeat: no-repeat; background-size: contain; background-position: center;
+    filter: blur(3px) brightness(.74) saturate(.9);
+    -webkit-mask-image: linear-gradient(90deg, transparent calc(50% - 37.5vh), #000 calc(50% - 28vh), #000 calc(50% + 28vh), transparent calc(50% + 37.5vh)), linear-gradient(180deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
+    -webkit-mask-composite: source-in;
+    mask-image: linear-gradient(90deg, transparent calc(50% - 37.5vh), #000 calc(50% - 28vh), #000 calc(50% + 28vh), transparent calc(50% + 37.5vh)), linear-gradient(180deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
+    mask-composite: intersect;
   }
-  .cutu-bg::after {
+  /* Phones / tall screens: the photo fills the width; fade only its top and bottom edges. */
+  @media (max-aspect-ratio: 3/4) {
+    .cutu-photo {
+      -webkit-mask-image: linear-gradient(180deg, transparent calc(50% - 66.7vw), #000 calc(50% - 52vw), #000 calc(50% + 52vw), transparent calc(50% + 66.7vw));
+      mask-image: linear-gradient(180deg, transparent calc(50% - 66.7vw), #000 calc(50% - 52vw), #000 calc(50% + 52vw), transparent calc(50% + 66.7vw));
+    }
+  }
+  /* Plum tint over the photo, in the page's own colours; it shares the photo's edge fade. */
+  .cutu-photo::after {
     content: ''; position: absolute; inset: 0;
-    background:
-      radial-gradient(ellipse at 50% 45%, rgba(74, 24, 64, .62) 0%, rgba(42, 14, 44, .8) 60%, rgba(23, 8, 24, .92) 100%);
+    background: linear-gradient(180deg, rgba(74, 24, 64, .5) 0%, rgba(58, 18, 52, .42) 45%, rgba(42, 14, 44, .55) 100%);
   }
   .cutu-inner { position: relative; z-index: 1; }
+  /* Soft dark veil just behind the words, so they stay readable over the photo. */
+  .cutu-inner::before {
+    content: ''; position: absolute; inset: -14% -18%; z-index: -1; pointer-events: none;
+    background: radial-gradient(closest-side, rgba(30, 8, 30, .5), rgba(30, 8, 30, .28) 55%, transparent);
+  }
   #cutu.show .cutu-inner { animation: heyIn 1.6s ease both; }
-  .cutu-text { font-size: clamp(3.6rem, 15vw, 8rem); margin: 0; }
-  .cutu-sub { margin: 14px auto 0; max-width: 460px; font-family: var(--font-serif); font-style: italic; font-size: clamp(1rem, 2.8vw, 1.25rem); color: var(--lav-1); opacity: .9; }
+  /* Warm ivory + gold against the plum-tinted photo. */
+  .cutu-text { font-size: clamp(3.6rem, 15vw, 8rem); margin: 0; color: #FFF8EE; }
+  .cutu-sub { margin: 14px auto 0; max-width: 460px; font-family: var(--font-serif); font-style: italic; font-size: clamp(1rem, 2.8vw, 1.25rem); color: #FFE9C4; text-shadow: 0 1px 2px rgba(30, 8, 30, .9), 0 2px 12px rgba(30, 8, 30, .85); text-wrap: balance; }
+  #cutu .cta-line { color: #FFF1DC; text-shadow: 0 1px 2px rgba(30, 8, 30, .9), 0 2px 12px rgba(30, 8, 30, .85); }
+  #cutu .cutu-tease { text-shadow: 0 1px 2px rgba(30, 8, 30, .9), 0 0 18px rgba(255, 214, 130, .4); }
   #cutu .enter-prompt { z-index: 1; }
   @keyframes popIn { from { transform: scale(.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
@@ -301,56 +320,66 @@
     font-size: clamp(2.4rem, 6vw, 3.4rem);
   }
 
-  /* ---------- Hero ---------- */
+  /* ---------- Hero ----------
+     Layout keeps the text off the faces:
+     - portrait / square screens: photo sits at the top, text block below it;
+     - landscape screens: photo on the right, text in the left column. */
   #hero {
     min-height: 100vh; min-height: 100svh;
-    display: grid; place-items: center;
+    display: grid; place-items: end center;
     text-align: center;
     overflow: hidden;
-    padding: 80px 20px;
+    padding: 24px 20px clamp(48px, 9vh, 96px);
   }
-  /* Back layer: the same photo, blurred, filling the screen so the sharp copy never looks letterboxed. */
+  /* Back layer: a plain, softly faded plum wash (no photo) so the text sits on a clean background. */
   .hero-bg {
-    position: absolute; inset: -6%;
+    position: absolute; inset: 0;
     background:
-      radial-gradient(circle at 20% 25%, rgba(255, 227, 138, .35), transparent 45%),
-      linear-gradient(160deg, #4A2A55, #6B3A4F 60%, #3A2440);
-    background-size: cover;
-    background-position: center 40%;
-    filter: blur(22px) brightness(.5) saturate(1.1);
+      radial-gradient(ellipse at 50% 30%, #5A3858 0%, transparent 60%),
+      linear-gradient(180deg, #4E2F4E 0%, #43273F 55%, #3A2138 100%);
   }
-  /* Front layer: the whole portrait, sharp and uncropped (contain), fading softly into the blurred copy. */
+  /* Front layer: the whole portrait, sharp and uncropped, fading softly into the blurred copy. */
   .hero-photo {
     position: absolute; inset: 0;
     background-repeat: no-repeat;
-    background-size: contain;
-    background-position: center;
-    filter: brightness(.68) saturate(1.02);
+    background-size: auto 60vh;
+    background-position: center top;
+    filter: brightness(.58) saturate(1.02);
     animation: kenburns 26s ease-in-out infinite alternate;
-    -webkit-mask-image: linear-gradient(90deg, transparent calc(50% - 37vh), #000 calc(50% - 22vh), #000 calc(50% + 22vh), transparent calc(50% + 37vh)), linear-gradient(180deg, #000 70%, transparent 100%);
+    transform-origin: center top;
+    -webkit-mask-image: linear-gradient(90deg, transparent calc(50% - 22.5vh), #000 calc(50% - 15vh), #000 calc(50% + 15vh), transparent calc(50% + 22.5vh)), linear-gradient(180deg, #000 44vh, transparent 60vh);
     -webkit-mask-composite: source-in;
-    mask-image: linear-gradient(90deg, transparent calc(50% - 37vh), #000 calc(50% - 22vh), #000 calc(50% + 22vh), transparent calc(50% + 37vh)), linear-gradient(180deg, #000 70%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent calc(50% - 22.5vh), #000 calc(50% - 15vh), #000 calc(50% + 15vh), transparent calc(50% + 22.5vh)), linear-gradient(180deg, #000 44vh, transparent 60vh);
     mask-composite: intersect;
   }
-  /* Portrait screens: the photo already fits, so fill the width instead of leaving bands. */
-  @media (max-aspect-ratio: 4/5) {
-    .hero-photo {
-      background-size: cover; background-position: center 35%;
-      -webkit-mask-image: linear-gradient(180deg, #000 70%, transparent 100%);
-      mask-image: linear-gradient(180deg, #000 70%, transparent 100%);
-    }
-  }
-  /* Fade the hero into the page glow instead of ending on a hard edge. */
+  /* Fade the hero into the page glow only at the very bottom, below the text. */
   .hero-bg, .hero-overlay {
-    -webkit-mask-image: linear-gradient(180deg, #000 70%, transparent 100%);
-    mask-image: linear-gradient(180deg, #000 70%, transparent 100%);
+    -webkit-mask-image: linear-gradient(180deg, #000 92%, transparent 100%);
+    mask-image: linear-gradient(180deg, #000 92%, transparent 100%);
   }
-  /* Plum dimming veil: darkest at the edges, a touch lighter behind the text. */
+  /* Plum dimming veil, a little deeper behind the text block. */
   .hero-overlay {
     position: absolute; inset: 0;
     background:
-      radial-gradient(ellipse at 50% 48%, rgba(38, 14, 40, .38) 0%, rgba(38, 14, 40, .52) 55%, rgba(24, 8, 26, .72) 100%),
-      linear-gradient(180deg, rgba(24, 8, 26, .25) 0%, transparent 35%, transparent 65%, rgba(24, 8, 26, .3) 100%);
+      radial-gradient(ellipse at 50% 35%, rgba(38, 14, 40, .42) 0%, rgba(38, 14, 40, .56) 55%, rgba(24, 8, 26, .74) 100%),
+      linear-gradient(180deg, rgba(24, 8, 26, .3) 0%, transparent 30%, transparent 55%, rgba(24, 8, 26, .4) 100%);
+  }
+  @media (min-aspect-ratio: 5/4) and (min-width: 900px) {
+    #hero { place-items: center start; text-align: left; padding: 40px 0 20vh clamp(32px, 7vw, 120px); }
+    .hero-photo {
+      left: 34%;
+      background-size: contain; background-position: center;
+      transform-origin: center;
+      -webkit-mask-image: linear-gradient(90deg, transparent calc(50% - 37vh), #000 calc(50% - 22vh), #000 calc(50% + 22vh), transparent calc(50% + 37vh)), linear-gradient(180deg, #000 80%, transparent 100%);
+      mask-image: linear-gradient(90deg, transparent calc(50% - 37vh), #000 calc(50% - 22vh), #000 calc(50% + 22vh), transparent calc(50% + 37vh)), linear-gradient(180deg, #000 80%, transparent 100%);
+    }
+    .hero-overlay {
+      background:
+        linear-gradient(90deg, rgba(24, 8, 26, .62) 0%, rgba(24, 8, 26, .48) 38%, rgba(38, 14, 40, .42) 60%, rgba(24, 8, 26, .66) 100%),
+        linear-gradient(180deg, rgba(24, 8, 26, .25) 0%, transparent 30%, transparent 70%, rgba(24, 8, 26, .3) 100%);
+    }
+    .hero-content { max-width: min(40vw, 580px); }
+    .hero-sub { margin: 0; }
   }
   .sparkle {
     position: absolute;
@@ -368,7 +397,6 @@
   .hero-kicker {
     display: inline-flex; align-items: center; gap: .6em;
     padding: .5em 1.3em;
-    position: relative; top: calc(-1 * clamp(18px, 5vh, 44px)); /* sits a little above the title */
     border-radius: 999px;
     background: rgba(30, 10, 32, .38);
     border: 1px solid rgba(255, 227, 138, .55);
@@ -403,20 +431,21 @@
   }
   .hero-sub { font-size: clamp(1rem, 2.4vw, 1.2rem); color: rgba(255, 244, 230, .94); text-shadow: 0 1px 12px rgba(20, 6, 22, .7); margin: 0 auto; max-width: 520px; }
   .scroll-cue {
-    display: inline-flex; flex-direction: column; align-items: center; gap: 6px;
-    margin-top: 44px;
+    display: inline-flex; flex-direction: row; align-items: center; gap: 12px;
+    margin-top: clamp(20px, 4vh, 40px);
     color: #FFF4E2; text-decoration: none; font-size: .8rem; letter-spacing: .2em; text-transform: uppercase;
     text-shadow: 0 1px 8px rgba(20, 6, 22, .6);
   }
+  /* Icon lies on its side; the gold dot glides left → right. */
   .scroll-cue i {
-    width: 26px; height: 42px; border: 2px solid #FFF4E2; border-radius: 14px; position: relative;
+    width: 42px; height: 26px; border: 2px solid #FFF4E2; border-radius: 14px; position: relative;
   }
   .scroll-cue i::after {
-    content: ''; position: absolute; left: 50%; top: 8px; width: 4px; height: 8px; margin-left: -2px;
+    content: ''; position: absolute; top: 50%; left: 8px; width: 8px; height: 4px; margin-top: -2px;
     border-radius: 2px; background: var(--gold);
     animation: wheel 1.6s ease-in-out infinite;
   }
-  @keyframes wheel { 0% { opacity: 0; transform: translateY(0); } 40% { opacity: 1; } 100% { opacity: 0; transform: translateY(14px); } }
+  @keyframes wheel { 0% { opacity: 0; transform: translateX(0); } 40% { opacity: 1; } 100% { opacity: 0; transform: translateX(14px); } }
 
   /* ---------- Story: three polaroid frames ---------- */
   #story {
@@ -585,6 +614,7 @@
     font-family: var(--font-serif);
     font-size: clamp(.95rem, 1.5vw, 1.06rem);
     line-height: 1.4;
+    text-wrap: balance; /* even two-line split, no lonely last word */
   }
   .reason-text b { font-family: var(--font-script); font-weight: 400; font-size: 1.7em; line-height: .8; color: var(--accent-ink); margin-right: .1em; }
   .reason:focus-visible { outline: none; }
@@ -849,6 +879,8 @@
   .feature-card:hover .fc-icon { transform: rotate(-8deg) scale(1.08); }
   .feature-card h3 { font-family: var(--font-serif); font-size: 1.3rem; margin: 0 0 .5em; }
   .feature-card ul { list-style: none; padding: 0; margin: 0; }
+  .feature-card li { text-wrap: pretty; }
+  .story-next, .notes-lock, .hero-sub, #proposal .lead { text-wrap: balance; } /* avoid single-word/emoji last lines on phones */
   .feature-card li { position: relative; padding-left: 1.5em; margin: .45em 0; color: var(--ink-soft); }
   .feature-card li::before { content: '\2661'; position: absolute; left: 0; color: var(--terra); }
   .feature-card p { margin: 0; color: var(--ink-soft); }
@@ -888,8 +920,15 @@
     filter: blur(var(--scenic-blur)) saturate(1.05);
   }
   #invite { --scrim-top: .35; --scrim-bottom: .55; --scenic-blur: 3px; }
-  #envelope { --scrim-top: .2; --scrim-bottom: .42; --scenic-blur: .5px; }
-  .env-to, .env-hint, .env-close { text-shadow: 0 1px 2px rgba(40, 10, 10, .9), 0 2px 14px rgba(40, 10, 10, .85); }
+  /* Envelope: a light blur + plum scrim, with a softer dark glow behind the heading and hint, so the light text reads on the bright photo. */
+  #envelope { --scrim-top: .38; --scrim-bottom: .5; --scenic-blur: 2.5px; }
+  .env-to, .env-hint, .env-close { text-shadow: 0 1px 2px rgba(30, 8, 14, .95), 0 2px 16px rgba(30, 8, 14, .9); }
+  .env-to, .env-hint { position: relative; isolation: isolate; }
+  .env-to::before, .env-hint::before {
+    content: ''; position: absolute; inset: -22px -40px; z-index: -1; pointer-events: none;
+    background: radial-gradient(closest-side, rgba(30, 10, 28, .58), rgba(30, 10, 28, .3) 60%, transparent);
+  }
+  .env-hint::before { inset: -14px -30px; }
   .invite-card {
     position: relative;
     width: min(640px, 100%);
@@ -924,6 +963,8 @@
     border: 1px solid #D9A3AE; background: #fff; color: var(--ink); font-size: 1rem;
   }
   .inv-eyebrow { font-size: .72rem; letter-spacing: .3em; text-transform: uppercase; color: #A9566A; font-weight: 600; }
+  /* Phones: keep the eyebrow clear of the ✕ button in the top-right corner. */
+  @media (max-width: 540px) { .inv-eyebrow { display: block; padding: 0 40px; text-wrap: balance; } }
   .inv-names { font-family: var(--font-script); font-weight: 400; font-size: clamp(3rem, 11vw, 4.8rem); line-height: 1.05; margin: .25em 0; color: var(--ink); }
   .inv-names span { display: block; font-size: .45em; color: #C27A8A; }
   .inv-text { font-family: var(--font-serif); font-style: italic; color: var(--ink-soft); max-width: 420px; margin: 0 auto; }
@@ -978,7 +1019,10 @@
   #cutu[data-stage="tease-1"] .cutu-tease[data-tease="1"],
   #cutu[data-stage="tease-2"] .cutu-tease[data-tease="2"] { opacity: 1; transform: none; }
   .cutu-final { display: flex; flex-direction: column; align-items: center; gap: 10px; opacity: 0; visibility: hidden; }
-  #cutu[data-stage="cta"] .cutu-final { animation: ctaDrop 1.2s cubic-bezier(.2, 1.35, .4, 1) both; }
+  /* Only while the Cutu screen is showing: the animation forces visibility:visible, which would
+     otherwise leave an invisible, tappable button on top of the "She said YES" card later on. */
+  #cutu.show[data-stage="cta"] .cutu-final { animation: ctaDrop 1.2s cubic-bezier(.2, 1.35, .4, 1) both; }
+  #cutu:not(.show) { pointer-events: none; }
   @keyframes ctaDrop {
     from { opacity: 0; visibility: visible; transform: translateY(-70px) scale(.92); }
     to { opacity: 1; visibility: visible; transform: none; }
@@ -999,7 +1043,7 @@
   /* ---------- Sealed envelope that opens into the invitation ---------- */
   #envelope {
     position: fixed; inset: 0; z-index: 830;
-    display: grid; place-items: center; padding: 24px;
+    display: grid; place-items: center; padding: 24px 16px;
     background: #2A0E2C;
     opacity: 0; visibility: hidden;
     transition: opacity .7s ease, visibility .7s ease;
@@ -1009,7 +1053,7 @@
   /* Heading over the bright mandap photo: ivory caps + gold italic serif, with the shared dark text-shadow. */
   .env-to {
     margin: 0;
-    font-family: 'Poppins', sans-serif; font-weight: 500; font-size: clamp(.7rem, 2.3vw, .85rem);
+    font-family: 'Poppins', sans-serif; font-weight: 600; font-size: clamp(.7rem, 2.3vw, .85rem);
     letter-spacing: .28em; text-transform: uppercase; color: #FFF6E6;
   }
   .env-to b {
@@ -1021,7 +1065,7 @@
   .env {
     position: relative;
     /* Large, but never taller than the screen leaves room for (text above + hint below). */
-    width: min(94vw, 620px, calc((100svh - 230px) * 1.5)); aspect-ratio: 1.5;
+    width: min(calc(100vw - 40px), 620px, calc((100svh - 230px) * 1.5)); aspect-ratio: 1.5;
     perspective: 1400px;
     cursor: pointer;
     --env-art: url('images/envelope-ganesh.svg');
@@ -1095,7 +1139,8 @@
   }
   .env-seal i { font-family: 'Playfair Display', var(--font-serif); font-style: italic; font-weight: 500; font-size: .7em; margin: 0 .12em; color: #7A2E24; position: relative; top: .12em; }
   .env-seal:focus-visible { outline: 3px solid #FFF8EC; outline-offset: 4px; }
-  .env-hint { margin: 0; font-size: .8rem; letter-spacing: .22em; text-transform: uppercase; color: var(--lav-1); animation: promptPulse 2.4s ease-in-out infinite; }
+  .env-hint { margin: 0; font-size: .85rem; letter-spacing: .22em; text-transform: uppercase; color: #FFF6E6; font-weight: 600; animation: hintPulse 2.4s ease-in-out infinite; }
+  @keyframes hintPulse { 0%, 100% { opacity: .75; } 50% { opacity: 1; } }
   .env-close {
     position: absolute; top: 18px; right: 18px;
     width: 40px; height: 40px; border-radius: 50%;
@@ -1240,7 +1285,7 @@
     <defs>
       <g id="sh-head">
         <path d="M-25 -2 Q-29 -32 0 -33 Q29 -32 25 -2 L27 28 Q13 22 0 23 Q-13 22 -27 28Z" fill="#2B1B14"/>
-        <ellipse cx="0" cy="0" rx="19" ry="21" fill="#A0673C"/>
+        <ellipse cx="0" cy="0" rx="19" ry="21" fill="#F3C9A8"/>
         <path d="M-20 -4 Q-19 -27 0 -27 Q19 -27 20 -4 Q13 -17 3 -15 Q-6 -21 -20 -4Z" fill="#2B1B14"/>
         <circle cx="0" cy="-11" r="1.6" fill="#C72A5E"/>
         <circle cx="-19.5" cy="7" r="2.2" fill="#FFD24D"/>
@@ -1289,8 +1334,7 @@
     <section id="reasons">
       <div class="container">
         <div class="section-head reveal">
-          <span class="eyebrow">Just for laughs</span>
-          <h2 class="section-title">5 Reasons I'm <em>Perfect for You</em></h2>
+          <h2 class="section-title">Why I'm <em>Perfect for You</em></h2>
         </div>
         <p class="reasons-hint reveal">Hover or tap a card to flip it ✨</p>
 
@@ -1324,7 +1368,7 @@
                     </g>
                   </svg>
                 </span>
-                <span class="reason-text"><b>1.</b> Early bird, meet night owl — I’m your free 6 AM alarm. No snooze button, no refunds. ☀️⏰</span>
+                <span class="reason-text"><b>1.</b> Night owl, meet early bird — your annoying 6 AM alarm. ⏰</span>
               </span>
             </span>
           </button>
@@ -1340,9 +1384,9 @@
                   <svg viewBox="0 0 200 170" role="img" aria-label="Srishti happily biting into a big pizza slice she won't share">
                     <ellipse cx="40" cy="156" rx="28" ry="7" fill="#FFF8FB" stroke="#DCC5F2" stroke-width="2"/>
                     <g fill="#FF8FB8"><circle cx="32" cy="154" r="1.6"/><circle cx="44" cy="156" r="1.4"/><circle cx="50" cy="153" r="1.2"/></g>
-                    <rect x="93" y="106" width="14" height="22" fill="#8A5530"/>
+                    <rect x="93" y="106" width="14" height="22" fill="#E3AF8C"/>
                     <path d="M50 172 Q54 128 100 124 Q146 128 150 172Z" fill="#FF8FB8"/>
-                    <path d="M88 125 Q100 138 112 125Z" fill="#A0673C"/>
+                    <path d="M88 125 Q100 138 112 125Z" fill="#F3C9A8"/>
                     <g transform="translate(98 88) scale(1.2)">
                       <use href="#sh-head"/><use href="#sh-eyes-open"/>
                       <path d="M-11 -6 l6 2.5 M11 -6 l-6 2.5" stroke="#2B1B14" stroke-width="2" stroke-linecap="round"/>
@@ -1354,12 +1398,12 @@
                     <g fill="#C72A5E"><circle cx="144" cy="92" r="5"/><circle cx="162" cy="82" r="4.5"/><circle cx="160" cy="104" r="4.5"/></g>
                     <path d="M128 104 q3 14 6 0Z M150 110 q2 10 4 0Z" fill="#FFE38A"/>
                     <path d="M140 172 Q148 140 152 120" stroke="#FF8FB8" stroke-width="15" stroke-linecap="round" fill="none"/>
-                    <circle cx="153" cy="114" r="9" fill="#A0673C"/>
+                    <circle cx="153" cy="114" r="9" fill="#F3C9A8"/>
                     <g stroke="#C72A5E" stroke-width="2.5" stroke-linecap="round"><path d="M184 54 l8 -8"/><path d="M190 66 l9 -3"/><path d="M174 48 l2 -10"/></g>
                     <text x="22" y="40" font-family="Playfair Display, Georgia, serif" font-style="italic" font-weight="700" font-size="18" fill="#C72A5E" transform="rotate(-10 40 34)">mine!</text>
                   </svg>
                 </span>
-                <span class="reason-text"><b>2.</b> You’re a proud bhukkad, I’m the cook — your plate will never be empty (and always matki-free).</span>
+                <span class="reason-text"><b>2.</b> I cook, you eat — but chai &amp; parathas? Your department. ☕</span>
               </span>
             </span>
           </button>
@@ -1374,9 +1418,9 @@
                 <span class="reason-art">
                   <svg viewBox="0 0 200 170" role="img" aria-label="Srishti singing into a microphone with eyes closed and full passion">
                     <circle cx="92" cy="90" r="62" fill="#FFE38A" opacity=".28"/>
-                    <rect x="85" y="106" width="14" height="22" fill="#8A5530"/>
+                    <rect x="85" y="106" width="14" height="22" fill="#E3AF8C"/>
                     <path d="M44 172 Q48 128 92 124 Q136 128 140 172Z" fill="#B9A3F2"/>
-                    <path d="M80 125 Q92 138 104 125Z" fill="#A0673C"/>
+                    <path d="M80 125 Q92 138 104 125Z" fill="#F3C9A8"/>
                     <g transform="translate(90 86) rotate(-12) scale(1.2)">
                       <use href="#sh-head"/><use href="#sh-eyes-closed"/>
                       <path d="M-11 -7 q4 -3 7 -1 M11 -7 q-4 -3 -7 -1" stroke="#2B1B14" stroke-width="1.8" fill="none" stroke-linecap="round"/>
@@ -1388,7 +1432,7 @@
                       <circle cx="0" cy="-5" r="10" fill="#DCC5F2" stroke="#4A2C4F" stroke-width="2.5"/>
                       <path d="M-7 -5 h14 M0 -12 v14" stroke="#4A2C4F" stroke-width="1" opacity=".5"/>
                     </g>
-                    <circle cx="124" cy="122" r="8.5" fill="#A0673C"/>
+                    <circle cx="124" cy="122" r="8.5" fill="#F3C9A8"/>
                     <g class="notes" font-family="Georgia, serif" font-weight="700">
                       <text x="138" y="66" font-size="24" fill="#7B6CD9">♪</text>
                       <text x="160" y="44" font-size="20" fill="#C72A5E" transform="rotate(28 166 38)">♫</text>
@@ -1397,7 +1441,7 @@
                     </g>
                   </svg>
                 </span>
-                <span class="reason-text"><b>3.</b> One day I’ll beat you at antakshari and show you what real expertise looks like. (A man can dream! 🎤)</span>
+                <span class="reason-text"><b>3.</b> In my dreams, I outplay you at antakshari. 🎤</span>
               </span>
             </span>
           </button>
@@ -1412,7 +1456,7 @@
                 <span class="reason-art">
                   <svg viewBox="0 0 200 170" role="img" aria-label="Srishti laughing mid-dance, tangled up in a blanket">
                     <ellipse cx="100" cy="162" rx="80" ry="6" fill="#DCC5F2" opacity=".55"/>
-                    <g stroke="#A0673C" stroke-width="7" stroke-linecap="round" fill="none">
+                    <g stroke="#F3C9A8" stroke-width="7" stroke-linecap="round" fill="none">
                       <path d="M88 112 L80 146"/><path d="M106 112 Q124 126 138 118"/>
                     </g>
                     <path d="M52 132 Q86 118 112 134 Q140 150 178 132 Q190 152 160 158 Q128 162 106 150 Q84 142 54 150Z" fill="#FF8FB8"/>
@@ -1420,11 +1464,11 @@
                     <g class="wiggle">
                       <path d="M84 62 L110 62 L126 116 L68 116Z" fill="#B9A3F2"/>
                       <path d="M72 104 L122 104" stroke="#FFE38A" stroke-width="3"/>
-                      <g stroke="#A0673C" stroke-width="7" stroke-linecap="round" fill="none">
+                      <g stroke="#F3C9A8" stroke-width="7" stroke-linecap="round" fill="none">
                         <path d="M86 68 Q70 50 62 30"/><path d="M108 68 Q128 74 144 60"/>
                       </g>
-                      <circle cx="61" cy="27" r="6" fill="#A0673C"/>
-                      <circle cx="146" cy="58" r="6" fill="#A0673C"/>
+                      <circle cx="61" cy="27" r="6" fill="#F3C9A8"/>
+                      <circle cx="146" cy="58" r="6" fill="#F3C9A8"/>
                       <g transform="translate(97 40) rotate(10) scale(.9)">
                         <use href="#sh-head"/><use href="#sh-eyes-happy"/>
                         <path d="M-7 8 q7 10 14 0z" fill="#6B2A2A"/>
@@ -1437,7 +1481,7 @@
                     <g fill="#FFD24D"><path d="M30 80 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3z"/><path d="M170 100 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2z"/></g>
                   </svg>
                 </span>
-                <span class="reason-text"><b>4.</b> Your PJs are terrible, mine are worse — so you’ll always have someone laughing at yours.</span>
+                <span class="reason-text"><b>4.</b> Your PJs are bad, mine are worse — you win. 😂</span>
               </span>
             </span>
           </button>
@@ -1458,9 +1502,9 @@
                     </g>
                     <g transform="translate(152 120) rotate(10)"><rect width="26" height="30" fill="#fff" stroke="#DCC5F2"/><rect x="3" y="3" width="20" height="18" fill="#B9A3F2"/></g>
                     <g transform="translate(14 60) rotate(-12)"><rect width="22" height="26" fill="#fff" stroke="#DCC5F2"/><rect x="3" y="3" width="16" height="15" fill="#FFE38A"/></g>
-                    <rect x="81" y="106" width="14" height="22" fill="#8A5530"/>
+                    <rect x="81" y="106" width="14" height="22" fill="#E3AF8C"/>
                     <path d="M40 172 Q44 128 88 124 Q132 128 136 172Z" fill="#FFD24D"/>
-                    <path d="M76 125 Q88 138 100 125Z" fill="#A0673C"/>
+                    <path d="M76 125 Q88 138 100 125Z" fill="#F3C9A8"/>
                     <g transform="translate(86 88) rotate(6) scale(1.2)">
                       <use href="#sh-head"/><use href="#sh-eyes-happy"/>
                       <path d="M-7 8 q7 9 14 0z" fill="#6B2A2A"/>
@@ -1473,12 +1517,12 @@
                       <circle cx="-1.5" cy="-12.5" r="2.5" fill="#B9A3F2"/>
                       <circle cx="7" cy="-17" r="2" fill="#FFE38A"/>
                     </g>
-                    <circle cx="142" cy="80" r="8.5" fill="#A0673C"/>
+                    <circle cx="142" cy="80" r="8.5" fill="#F3C9A8"/>
                     <path class="flash" d="M162 26 l4 10 10 4 -10 4 -4 10 -4 -10 -10 -4 10 -4z" fill="#FFE38A"/>
                     <g fill="#C72A5E" font-size="14" font-family="Georgia, serif"><text x="176" y="92">♥</text><text x="108" y="36">♥</text></g>
                   </svg>
                 </span>
-                <span class="reason-text"><b>5.</b> You plan every trip, I bring the plot twists — and I’ll click 100 photos till you love one. 📸</span>
+                <span class="reason-text"><b>5.</b> I love clicking you — even if it takes 100 tries. 📸</span>
               </span>
             </span>
           </button>
@@ -1581,18 +1625,18 @@
       <p>Here's to a lifetime of love, laughter and happiness. 💛</p>
       <div class="sign">— Vivek</div>
       <div class="modal-actions">
-        <button class="btn-soft" id="againBtn" type="button">Celebrate again 🎉</button>
-        <button class="btn-soft" type="button" data-open-invite>Wedding invite 💌</button>
         <button class="btn-soft warm" id="closeBtn" type="button">Enter our home 🏡</button>
+        <button class="btn-soft" type="button" data-open-invite>Wedding invite 💌</button>
+        <button class="btn-soft" id="againBtn" type="button">Celebrate again 🎉</button>
       </div>
     </div>
   </div>
 
   <div id="cutu" role="dialog" aria-modal="true" aria-labelledby="cutuTitle">
-    <div class="cutu-bg" id="cutuBg" aria-hidden="true"></div>
     <span class="orb a" aria-hidden="true"></span>
     <span class="orb b" aria-hidden="true"></span>
     <span class="orb c" aria-hidden="true"></span>
+    <div class="cutu-photo" id="cutuPhoto" aria-hidden="true"></div>
     <div class="cutu-inner">
       <h2 class="cutu-text script-glow" id="cutuTitle">Hey ! Cutu 💕</h2>
       <p class="cutu-sub">One little ‘yes’, a lifetime of us. Every chapter from here, we write together.</p>
@@ -1719,7 +1763,7 @@
   // No photo used elsewhere on the site, and no near-duplicates (same outfit/moment).
   // 14 photos + the "coming soon" tile = 3 rows of 5 on desktop; 7 rows of 2 on phones, then the tile full-width.
   const GALLERY = [
-    ['IMG_6272.jpg', 'Ghats of Banaras'], ['IMG_20251104_211024.jpg', 'Snow-capped smiles', 'center 72%'],
+    ['IMG_6272.jpg', 'Ghats of Banaras'], ['IMG_1023.jpg', 'Leafy morning walks', 'center 40%'],
     ['IMG_6275.jpg', 'Jumping for joy'], ['IMG_6291.jpg', 'Born to ride'], ['IMG_6282.jpg', 'Waves & sea breeze'],
     ['IMG_6297.jpg', 'Boat ride with the seagulls'], ['IMG_6292.jpg', 'Riverside calm'], ['IMG_6299.jpg', 'Blushing in black'],
     ['IMG-20241007-WA0000.jpg', 'Nature’s child'], ['IMG_6278.jpg', 'By the waterfall'],
@@ -2677,6 +2721,7 @@
   }
   function showInviteFromEnvelope() {
     cutu.classList.remove('show'); // hide quietly; the YES card follows the invite instead
+    cutuTimers.splice(0).forEach(clearTimeout);
     openInvite();
     envelope.classList.remove('show');
     setTimeout(() => envelope.classList.remove('open'), 800);
@@ -2805,9 +2850,8 @@
   // Most browsers block this until the first tap; startExperience() retries on that tap.
   audio.crossfadeTo('intro');
   renderMute();
-  setBgPhoto($('#heroBg'), PHOTOS.hero);
   setBgPhoto($('#heroPhoto'), PHOTOS.hero);
-  setBgPhoto($('#cutuBg'), PHOTOS.cutu);
+  setBgPhoto($('#cutuPhoto'), PHOTOS.cutu);
   makePhoto(PHOTOS.celebration, 'Srishti and Vivek', '💍', $('#celebratePhoto'));
   buildTimeline();
   setupScratchNotes();
